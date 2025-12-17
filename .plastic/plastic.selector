@@ -1,0 +1,4 @@
+repository "Gunsprint/Gunsprint@18967639652932@cloud"
+  path "/"
+    br "/main"
+    co "/main"
