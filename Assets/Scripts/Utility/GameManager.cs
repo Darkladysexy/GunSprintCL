@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject _pauseMenuUI;
     [SerializeField] private GameObject _winCanvasUI;
+    [SerializeField] private GameObject _loseCanvasUI;
     [SerializeField] private TextMeshProUGUI _scoreText;     // Text hiển thị tổng điểm trên HUD
     [SerializeField] private TextMeshProUGUI _winScoreText;  // Text hiển thị số điểm nhận được trên Win Canvas
 
@@ -33,6 +34,8 @@ public class GameManager : MonoBehaviour
     private const string KEY_UP_BULLET = "up_bullets_lv";
     private const string KEY_UP_POWER = "up_power_lv";
     private const string KEY_UP_START = "up_start_lv";
+    private const string KEY_TOTAL_COIN = "total_coin";
+    private const string KEY_CURRENT_LEVEL = "current_level_index";
 
     // --- HỆ THỐNG NÂNG CẤP (UPGRADES) ---
     public int BulletUpgradeLevel => PlayerPrefs.GetInt(KEY_UP_BULLET, 0);
@@ -43,44 +46,71 @@ public class GameManager : MonoBehaviour
     public int GetStartBulletsBase(int baseBullets) => baseBullets + BulletUpgradeLevel;
     public float GunPowerMultiplier() => 1f + 0.02f * PowerUpgradeLevel;
     public float StartingPlaceBonusMeters() => 20f * StartUpgradeLevel;
+    // Thêm các thuộc tính mới
+    public int TotalCoin => PlayerPrefs.GetInt(KEY_TOTAL_COIN, 0);
+    public int CurrentLevelIndex => PlayerPrefs.GetInt(KEY_CURRENT_LEVEL, 0);
+
+    [SerializeField] private TextMeshProUGUI _currentLevelText; // Text hiện "Level 1", "Level 2"...
 
     // --- KHỞI TẠO ---
     void Awake()
     {
-        // Thiết lập Singleton
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        Instance = this;
 
-        // Tải chế độ chơi từ bộ nhớ
+        // Tải chế độ chơi
         CurrentMode = (GameMode)PlayerPrefs.GetInt(KEY_MODE, (int)GameMode.Levels);
     }
 
     void Start()
     {
-        _score = 0;
-        CurrentLevelScore = 0;
+        // Luôn đặt lại thời gian về 1 khi bắt đầu Scene mới
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f;
+        isPaused = false;
+
+        // Tải dữ liệu Coin và Level từ bộ nhớ
+        _score = PlayerPrefs.GetInt(KEY_TOTAL_COIN, 0);
         
-        // Khởi tạo trạng thái UI
+        CurrentLevelScore = 0;
+        IsLevelFinished = false;
+
+        // Khởi tạo UI
         if (_pauseMenuUI) _pauseMenuUI.SetActive(false);
         if (_winCanvasUI) _winCanvasUI.SetActive(false);
+        if (_loseCanvasUI) _loseCanvasUI.SetActive(false);
         
         UpdateScoreUI();
+        UpdateLevelUI();
         PlayMusic();
     }
-
+    void Update()
+    {
+        // Nhấn phím R trên bàn phím để reset nhanh khi đang test (chỉ chạy trong Editor)
+        #if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetProgress();
+        }
+        #endif
+    }
+    // Hàm cập nhật Text Level
+    public void UpdateLevelUI()
+    {
+        if (_currentLevelText != null) 
+            _currentLevelText.text = "Level " + (CurrentLevelIndex + 1);
+    }
     // --- QUẢN LÝ ĐIỂM SỐ ---
     public void AddScore(int amount)
     {
+        // 1. Cộng vào điểm tạm thời của màn (để dùng nhân hệ số khi thắng)
+        CurrentLevelScore += amount; 
+
+        // 2. Cộng vào tổng số coin và lưu lại
         _score += amount;
-        CurrentLevelScore += amount;
+        PlayerPrefs.SetInt(KEY_TOTAL_COIN, _score);
+        PlayerPrefs.Save();
+
+        // 3. Cập nhật UI ngay lập tức
         UpdateScoreUI();
     }
 
@@ -97,31 +127,50 @@ public class GameManager : MonoBehaviour
         if (IsLevelFinished) return;
         IsLevelFinished = true;
 
-        // Tính toán điểm thưởng
-        int totalWinFromLevel = CurrentLevelScore * multiplier;
+        // Tính số điểm thưởng thêm từ hệ số nhân (multiplier)
+        // Ví dụ: ăn 10 điểm, nhân 5 => tổng nhận 50. Vì đã cộng 10 lúc bắn, giờ cộng nốt 40.
         int bonusAmount = CurrentLevelScore * (multiplier - 1);
+        int totalWinFromLevel = CurrentLevelScore * multiplier;
         
         _score += bonusAmount;
-        UpdateScoreUI();
+        PlayerPrefs.SetInt(KEY_TOTAL_COIN, _score);
+        PlayerPrefs.Save();
 
-        // Kích hoạt hiệu ứng quay chậm (Slow-mo) khi thắng
+        UpdateScoreUI();
         ToggleSlowMo(true); 
 
-        // Hiển thị giao diện chiến thắng
         if (_winCanvasUI != null)
         {
             _winCanvasUI.SetActive(true);
             if (_winScoreText != null) _winScoreText.text = "+" + totalWinFromLevel.ToString();
         }
     }
-
+    public void GameOver()
+    {
+        if (IsLevelFinished) return; // Nếu đã thắng thì không tính thua nữa
+        
+        isPaused = true;
+        Time.timeScale = 0f; // Dừng game
+        
+        if (_loseCanvasUI != null)
+        {
+            _loseCanvasUI.SetActive(true);
+        }
+    }
     // Chuyển sang màn chơi tiếp theo (được gọi từ Button trên WinCanvas)
     public void NextLevel()
     {
         IsLevelFinished = false;
+        
+        // Tăng level index và lưu lại
+        int nextLvl = CurrentLevelIndex + 1;
+        PlayerPrefs.SetInt(KEY_CURRENT_LEVEL, nextLvl);
+        PlayerPrefs.Save();
+
+        UpdateLevelUI();
+
         if (_winCanvasUI) _winCanvasUI.SetActive(false);
         ToggleSlowMo(false);
-        // Lưu ý: Logic tải màn mới hoặc reset vị trí súng sẽ do LevelModeDistance xử lý
     }
 
     // --- QUẢN LÝ VẬT LÝ SÚNG ---
@@ -199,16 +248,21 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        Time.timeScale = 1f;
-        isPaused = false;
-        // Xóa instance hiện tại trước khi chuyển cảnh nếu cần thiết (tùy thuộc vào thiết kế logic)
-        Destroy(gameObject); 
+        // Trước khi đi, lưu lại dữ liệu lần cuối cho chắc chắn
+        PlayerPrefs.SetInt(KEY_TOTAL_COIN, _score);
+        PlayerPrefs.Save();
+
+        // Chuyển cảnh (Scene mới sẽ tự tạo GameManager mới với các liên kết UI mới)
         SceneManager.LoadScene(sceneName);
     }
 
     public void Replay()
     {
-        if (isPaused) TogglePause();
+            // Đảm bảo tắt bảng UI trước khi load lại
+        if (_pauseMenuUI) _pauseMenuUI.SetActive(false);
+        if (_winCanvasUI) _winCanvasUI.SetActive(false);
+        if (_loseCanvasUI) _loseCanvasUI.SetActive(false);
+        // IsLevelFinished = false;
         LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -216,5 +270,34 @@ public class GameManager : MonoBehaviour
     {
         if (isPaused) TogglePause();
         LoadScene("MainMenu");
+    }
+
+    // Thêm vào trong class GameManager trong file Scripts/Utility/GameManager.cs
+
+    public void ResetProgress()
+    {
+        // Xóa toàn bộ dữ liệu lưu trữ liên quan đến game
+        PlayerPrefs.DeleteKey(KEY_TOTAL_COIN);
+        PlayerPrefs.DeleteKey(KEY_CURRENT_LEVEL);
+        
+        // Nếu bạn muốn xóa cả các nâng cấp (Upgrades), hãy thêm các dòng dưới đây:
+        PlayerPrefs.DeleteKey(KEY_UP_BULLET);
+        PlayerPrefs.DeleteKey(KEY_UP_POWER);
+        PlayerPrefs.DeleteKey(KEY_UP_START);
+
+        PlayerPrefs.Save();
+
+        // Reset các biến tạm thời trong code
+        _score = 0;
+        CurrentLevelScore = 0;
+        
+        // Cập nhật lại giao diện ngay lập tức
+        UpdateScoreUI();
+        UpdateLevelUI();
+
+        Debug.Log("Đã xóa toàn bộ tiến trình game (Coin và Level) để Test.");
+        
+        // Tùy chọn: Load lại scene hiện tại để mọi thứ reset hoàn toàn
+        Replay(); 
     }
 }

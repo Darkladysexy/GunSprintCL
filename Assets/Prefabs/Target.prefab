@@ -122,8 +122,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _multiplier: 10
-  _hitEffectPrefab: {fileID: 8464950693656172981, guid: 83ad694f134ab954580473212156b35a, type: 3}
   _fragmentPrefab: {fileID: 72452496430060288, guid: 1e242c3e8bc1e734c93e992881cf7713, type: 3}
   _numberOfFragments: 5
-  _explosionForce: 10
+  _explosionForce: 20
   _fragmentLifeTime: 2

@@ -3,7 +3,6 @@ using UnityEngine;
 public class ScoreMultiplier : MonoBehaviour
 {
     [SerializeField] private int _multiplier = 10;
-    [SerializeField] private GameObject _hitEffectPrefab;
     [SerializeField] private GameObject _fragmentPrefab;
     [SerializeField] private int _numberOfFragments = 10;
     [SerializeField] private float _explosionForce = 15f;
@@ -20,11 +19,7 @@ public class ScoreMultiplier : MonoBehaviour
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {
             _isHit = true;
-
-            // 1. Hiệu ứng nổ tại chỗ
-            if (_hitEffectPrefab != null) 
-                Instantiate(_hitEffectPrefab, transform.position, Quaternion.identity);
-
+            // 1. Phát hiệu ứng âm thanh (nếu có)
             // 2. Tạo các mảnh vỡ văng ra
             for (int i = 0; i < _numberOfFragments; i++)
             {
@@ -32,7 +27,7 @@ public class ScoreMultiplier : MonoBehaviour
                 {
                     GameObject fragment = Instantiate(_fragmentPrefab, transform.position, Random.rotation);
                     Rigidbody rb = fragment.GetComponent<Rigidbody>();
-                    if (rb != null) rb.AddExplosionForce(_explosionForce, transform.position, 2f);
+                    if (rb != null) rb.AddExplosionForce(_explosionForce, transform.position, 10f);
                     Destroy(fragment, _fragmentLifeTime);
                 }
             }

@@ -34,8 +34,20 @@ public class GunSprint : MonoBehaviour
         if (GameManager.Instance && GameManager.Instance.isPaused) return;
 
         // NEW: báo rơi map trong Infinity
-        if (GameManager.Instance && GameManager.Instance.CurrentMode == GameMode.Infinity && transform.position.y < _killY)
-            GameManager.Instance.NotifyGunLost();
+        if (transform.position.y < _killY)
+            {
+                if (GameManager.Instance != null)
+                {
+                    if (GameManager.Instance.CurrentMode == GameMode.Infinity)
+                    {
+                        GameManager.Instance.NotifyGunLost();
+                    }
+                    else // Chế độ Levels
+                    {
+                        GameManager.Instance.GameOver();
+                    }
+                }
+            }
 
         _rb.angularVelocity = new Vector3(0, 0, Mathf.Clamp(_rb.angularVelocity.z, -_maxAngularVelocity, _maxAngularVelocity));
 
