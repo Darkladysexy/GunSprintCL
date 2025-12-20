@@ -654,6 +654,22 @@ MonoBehaviour:
     stepMeters: 5
     swordRate: 0.352
     shieldRate: 0
+  - name: lv2
+    mapPrefabs:
+    - {fileID: 6871361980861993215, guid: f9c0b0050e601b846a698dc7b795490f, type: 3}
+    enemies: 2
+    firstMark: 5
+    stepMeters: 5
+    swordRate: 1
+    shieldRate: 0
+  - name: lv3
+    mapPrefabs:
+    - {fileID: 6871361980861993215, guid: f9c0b0050e601b846a698dc7b795490f, type: 3}
+    enemies: 2
+    firstMark: 5
+    stepMeters: 5
+    swordRate: 0.732
+    shieldRate: 0
 --- !u!4 &977056005
 Transform:
   m_ObjectHideFlags: 0

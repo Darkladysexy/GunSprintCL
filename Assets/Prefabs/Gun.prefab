@@ -145,8 +145,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4324084890110748299}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.014666601, y: -0.70695466, z: -0.014666601, w: 0.70695466}
-  m_LocalPosition: {x: -0.061, y: 0.123, z: 0}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 2, y: 1, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -250,7 +250,7 @@ MonoBehaviour:
   _smokeSystem: {fileID: 3533348333719445868}
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   _gunAnimator: {fileID: 0}
   _bulletSpeed: 12
   _torque: 120
@@ -261,6 +261,7 @@ MonoBehaviour:
   _smokeLength: 1
   _maxY: 10
   _floorBounceForce: 0.7
+  _killY: -5
 --- !u!1 &5707342761274136691
 GameObject:
   m_ObjectHideFlags: 0
