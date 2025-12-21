@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class GunSprint : MonoBehaviour
 {
+    // ... (Giữ nguyên các SerializeField cũ) ...
     [SerializeField] private Bullet _bulletPrefab;
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private ParticleSystem _smokeSystem;
@@ -19,51 +20,82 @@ public class GunSprint : MonoBehaviour
     [SerializeField] private float _maxY = 10;
     [SerializeField] private float _floorBounceForce = 1f;
 
-    [Header("Out of bounds (NEW)")]
-    [SerializeField] private float _killY = -5f; // rơi dưới mức này thì thua (Infinity)
+    [Header("Out of bounds")]
+    [SerializeField] private float _killY = -10f; 
 
     private Rigidbody _rb;
     private float _lastFired;
     private Collider _gunCollider;
     private bool _isTouchingFloor = false;
+    
+    // Biến để lưu quãng đường xa nhất đạt được trong lượt này
+    private float _maxDistanceReached = 0f;
+    private float _startPosX;
 
-    private void Awake(){ _rb = GetComponent<Rigidbody>(); _gunCollider = GetComponent<Collider>(); }
+    private void Awake()
+    { 
+        _rb = GetComponent<Rigidbody>(); 
+        _gunCollider = GetComponent<Collider>();
+        _startPosX = transform.position.x;
+    }
 
     private void Update()
     {
-        if (GameManager.Instance && GameManager.Instance.isPaused) return;
+        if (GameManager.Instance == null || GameManager.Instance.isPaused) return;
 
-        // NEW: báo rơi map trong Infinity
+        // 1. XỬ LÝ TÍNH MÉT LIVE
+        // Thay vì dùng Mathf.Abs, ta dùng dấu trừ phía trước position.x
+        // Vì súng đi về hướng X âm, nên -position.x sẽ ra số dương
+        float currentProgress = -transform.position.x;
+        
+        // Sử dụng Mathf.Max để đảm bảo:
+        // - Nếu đi lùi (X dương), currentProgress sẽ âm -> không cập nhật _maxDistanceReached
+        // - Quãng đường chỉ có tăng, không giảm khi súng bị nảy ngược lại
+        _maxDistanceReached = Mathf.Max(_maxDistanceReached, currentProgress);
+
+        if (GameManager.Instance.CurrentMode == GameMode.Infinity)
+        {
+            GameManager.Instance.UpdateMetersUI(_maxDistanceReached);
+        }
+
+        // 2. XỬ LÝ LOSE / FINISH
         if (transform.position.y < _killY)
+        {
+            if (GameManager.Instance.CurrentMode == GameMode.Infinity)
             {
-                if (GameManager.Instance != null)
-                {
-                    if (GameManager.Instance.CurrentMode == GameMode.Infinity)
-                    {
-                        GameManager.Instance.NotifyGunLost();
-                    }
-                    else // Chế độ Levels
-                    {
-                        GameManager.Instance.GameOver();
-                    }
-                }
+                // Truyền giá trị lớn nhất đạt được vào màn hình kết thúc
+                GameManager.Instance.ShowDoneScreen(_maxDistanceReached);
             }
+            else
+            {
+                GameManager.Instance.GameOver();
+            }
+            return; 
+        }
 
+        // Kiểm tra hết đạn trong chế độ Infinity
+        if (GameManager.Instance.CurrentMode == GameMode.Infinity && GameManager.Instance.Ammo <= 0)
+        {
+            // Nếu súng đã dừng hẳn (hoặc rơi) và hết đạn thì mới kết thúc
+            if (_rb.linearVelocity.magnitude < 0.1f) 
+            {
+                GameManager.Instance.ShowDoneScreen(_maxDistanceReached);
+            }
+        }
+
+        // ... (Phần xử lý bắn súng và vật lý giữ nguyên bên dưới) ...
         _rb.angularVelocity = new Vector3(0, 0, Mathf.Clamp(_rb.angularVelocity.z, -_maxAngularVelocity, _maxAngularVelocity));
 
         if (Input.GetMouseButtonDown(0))
         {
-            // NEW: trừ đạn khi Infinity
-            if (GameManager.Instance && GameManager.Instance.CurrentMode == GameMode.Infinity)
+            if (GameManager.Instance.CurrentMode == GameMode.Infinity)
                 if (!GameManager.Instance.TryConsumeAmmo(1)) return;
 
             var hitsTarget = Physics.Raycast(_spawnPoint.position, _spawnPoint.forward, float.PositiveInfinity, _targetLayer);
-            if (hitsTarget && GameManager.Instance) GameManager.Instance.ToggleSlowMo(true);
+            if (hitsTarget) GameManager.Instance.ToggleSlowMo(true);
 
             var bullet = Instantiate(_bulletPrefab, _spawnPoint.position, _spawnPoint.rotation);
-            Debug.Log("Ban thanh cong");
-            // NEW: cộng power theo upgrade
-            float powerMul = GameManager.Instance ? GameManager.Instance.GunPowerMultiplier() : 1f;
+            float powerMul = GameManager.Instance.GunPowerMultiplier();
             bullet.Init(_spawnPoint.forward * (_bulletSpeed * powerMul), _gunCollider);
 
             _smokeSystem.Play();
@@ -91,6 +123,7 @@ public class GunSprint : MonoBehaviour
             _smokeSystem.Stop();
     }
 
+    // ... (Giữ nguyên OnCollisionEnter và OnCollisionExit) ...
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Floor"))

@@ -69,27 +69,37 @@ public class DistanceEnemySpawner : MonoBehaviour
     }
 
     // ===== API cho Levels & Infinity =====
-    public GameObject SpawnAtMeters(float metersAlong, bool? forceSword, bool? forceShield){
-        Vector3 f = PathForward();                  // hướng dọc A→B (đã normalize & phẳng)
-        Vector3 r = Vector3.Cross(Vector3.up, f);   // ngang đường
+    public GameObject SpawnAtMeters(float metersAlong, bool? forceSword, bool? forceShield) {
+        Vector3 f = PathForward();
+        Vector3 r = Vector3.Cross(Vector3.up, f);
         Vector3 pos = PathOrigin() + f * metersAlong + r * Random.Range(-lateralRange, lateralRange);
-        Quaternion rot = Quaternion.LookRotation(f);
 
-        // Snap Y xuống sàn
-        if (useGroundRaycast){
-            Vector3 down = DownDir(), up = -down;
+        // KIỂM TRA SÀN TRƯỚC KHI SPAWN
+        if (useGroundRaycast) {
+            Vector3 down = DownDir();
+            Vector3 up = -down;
             Vector3 start = pos + up * rayHeight;
-            if (Physics.Raycast(start, down, out var hit, rayHeight * 2f, groundMask))
+
+            // Thực hiện bắn tia Raycast xuống dưới
+            if (Physics.Raycast(start, down, out var hit, rayHeight * 2f, groundMask)) {
+                // Nếu trúng sàn, cập nhật lại vị trí Y chính xác theo sàn
                 pos.y = hit.point.y;
+            } else {
+                // QUAN TRỌNG: Nếu không tìm thấy sàn ở dưới vị trí này, hủy spawn
+                Debug.Log("Không có sàn tại mốc " + metersAlong + "m - Hủy Spawn.");
+                return null; 
+            }
         }
 
-        bool useSword   = forceSword  ?? (Random.value < swordRate);
+        // Chỉ chạy đoạn code dưới đây nếu đã tìm thấy sàn hợp lệ
+        bool useSword = forceSword ?? (Random.value < swordRate);
         bool withShield = forceShield ?? (!useSword && Random.value < shieldRate);
         var prefab = useSword && prefabs.sword ? prefabs.sword :
-                     prefabs.idle ? prefabs.idle : prefabs.basic;
+                    prefabs.idle ? prefabs.idle : prefabs.basic;
+
         if (!prefab) return null;
 
-        var go = Instantiate(prefab, pos, rot);
+        var go = Instantiate(prefab, pos, Quaternion.LookRotation(f));
         _alive.Add(go);
         var enemy = go.GetComponent<Enemy>();
         if (enemy) enemy.Init(withShield);
