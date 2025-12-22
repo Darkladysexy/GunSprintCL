@@ -12,6 +12,19 @@ public class GameManager : MonoBehaviour
     public bool isPaused = false;
     public bool IsLevelFinished { get; private set; } = false;
 
+    [Header("Audio Clips")]
+    [SerializeField] private AudioSource _sfxSource; // Source để phát hiệu ứng âm thanh
+    [SerializeField] public AudioClip ClickSfx;
+    [SerializeField] private AudioClip _upgradeSfx;
+    [SerializeField] private AudioClip _winSfx;
+    [SerializeField] private AudioClip _loseSfx;
+    [SerializeField] private AudioClip _slowMoSfx;
+    [SerializeField] private AudioClip _reloadAmmoSfx;
+    
+        public bool IsMusicPlaying() {
+        return _musicSource != null && _musicSource.isPlaying;
+    }
+
     [Header("UI Display Mode")]
     [SerializeField] private GameObject _levelUIContainer;    
     [SerializeField] private GameObject _infinityUIContainer; 
@@ -61,7 +74,7 @@ public class GameManager : MonoBehaviour
     private const string KEY_TOTAL_COIN = "total_coin";
     private const string KEY_CURRENT_LEVEL = "current_level_index";
     private const string KEY_BEST_METERS = "best_meters";
-
+    private const string KEY_SOUND_SETTING = "Setting_Sound";
     public int BulletUpgradeLevel => PlayerPrefs.GetInt(KEY_UP_BULLET, 0);
     public int PowerUpgradeLevel => PlayerPrefs.GetInt(KEY_UP_POWER, 0);
     public int StartUpgradeLevel => PlayerPrefs.GetInt(KEY_UP_START, 0);
@@ -111,9 +124,14 @@ public class GameManager : MonoBehaviour
         if (_winCanvasUI) _winCanvasUI.SetActive(false);
         if (_loseCanvasUI) _loseCanvasUI.SetActive(false);
         if (_doneCanvasUI) _doneCanvasUI.SetActive(false);
-
+        int soundSetting = PlayerPrefs.GetInt(KEY_SOUND_SETTING, 1);
+            ApplySoundSetting(soundSetting == 1);
         UpdateScoreUI(); 
-        PlayMusic();
+        // PlayMusic();
+    }
+    // Hàm phát âm thanh hiệu ứng
+    public void PlaySFX(AudioClip clip) {
+        if (_sfxSource && clip) _sfxSource.PlayOneShot(clip);
     }
 
     // --- HỆ THỐNG NÂNG CẤP ---
@@ -124,6 +142,7 @@ public class GameManager : MonoBehaviour
         if (_score >= cost) {
             _score -= cost;
             PlayerPrefs.SetInt(KEY_UP_BULLET, BulletUpgradeLevel + 1);
+            PlaySFX(_upgradeSfx);
             SaveAndRefreshUI();
         }
     }
@@ -133,6 +152,7 @@ public class GameManager : MonoBehaviour
         if (_score >= cost) {
             _score -= cost;
             PlayerPrefs.SetInt(KEY_UP_POWER, PowerUpgradeLevel + 1);
+            PlaySFX(_upgradeSfx);
             SaveAndRefreshUI();
         }
     }
@@ -142,6 +162,7 @@ public class GameManager : MonoBehaviour
         if (_score >= cost) {
             _score -= cost;
             PlayerPrefs.SetInt(KEY_UP_START, StartUpgradeLevel + 1);
+            PlaySFX(_upgradeSfx);
             SaveAndRefreshUI();
         }
     }
@@ -172,6 +193,7 @@ public class GameManager : MonoBehaviour
     public void ShowDoneScreen(float meters)
     {
         isPaused = true;
+        PlaySFX(_winSfx);
         Time.timeScale = 0f;
         if (_infinityUIContainer) _infinityUIContainer.SetActive(false);
 
@@ -234,6 +256,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void WinLevel(int multiplier) {
+        PlaySFX(_winSfx);
         if (IsLevelFinished) return;
         IsLevelFinished = true;
         int totalWinFromLevel = CurrentLevelScore * multiplier;
@@ -253,6 +276,7 @@ public class GameManager : MonoBehaviour
         isPaused = true;
         Time.timeScale = 0f;
         if (_loseCanvasUI != null) _loseCanvasUI.SetActive(true);
+        PlaySFX(_loseSfx);
     }
 
     public void LoadScene(string sceneName) {
@@ -275,11 +299,12 @@ public class GameManager : MonoBehaviour
     }
 
     public void ToggleSlowMo(bool enabled) {
-        if (!isPaused) {
-            Time.timeScale = enabled ? 0.2f : 1f;
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        }
+    if (!isPaused) {
+        Time.timeScale = enabled ? 0.2f : 1f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        if (enabled) PlaySFX(_slowMoSfx); // Phát tiếng slow-mo
     }
+}
 
     public void TogglePause() {
         isPaused = !isPaused;
@@ -331,7 +356,7 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    public void NotifyEnemyKilled() { if (CurrentMode == GameMode.Infinity) AddAmmo(2); }
+    public void NotifyEnemyKilled() { if (CurrentMode == GameMode.Infinity) AddAmmo(2); PlaySFX(_reloadAmmoSfx); }
 
     public void PlayMusic() {
         if (_musicSource && _backgroundMusic && !_musicSource.isPlaying) {
@@ -343,8 +368,23 @@ public class GameManager : MonoBehaviour
 
     public void ToggleSound() { 
         if (_musicSource) { 
-            if (_musicSource.isPlaying) _musicSource.Pause(); 
-            else _musicSource.UnPause(); 
+            bool newState = !_musicSource.isPlaying;
+            ApplySoundSetting(newState);
+            // Lưu lại vào máy
+            PlayerPrefs.SetInt(KEY_SOUND_SETTING, newState ? 1 : 0);
+            PlayerPrefs.Save();
         } 
+    }
+    private void ApplySoundSetting(bool isOn) {
+        if (_musicSource) {
+            if (isOn) _musicSource.UnPause(); 
+            else _musicSource.Pause();
+            _musicSource.mute = !isOn; 
+        }
+        // Tắt cả SFX nếu cần
+        if (_sfxSource) _sfxSource.mute = !isOn;
+    }
+    public bool IsSoundOn() {
+        return PlayerPrefs.GetInt(KEY_SOUND_SETTING, 1) == 1;
     }
 }

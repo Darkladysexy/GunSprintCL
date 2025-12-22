@@ -7,6 +7,7 @@ public class ScoreMultiplier : MonoBehaviour
     [SerializeField] private int _numberOfFragments = 10;
     [SerializeField] private float _explosionForce = 15f;
     [SerializeField] private float _fragmentLifeTime = 2f;
+    [SerializeField] private AudioClip _breakSfx;
 
     private bool _isHit = false;
 
@@ -20,6 +21,7 @@ public class ScoreMultiplier : MonoBehaviour
         {
             _isHit = true;
             // 1. Phát hiệu ứng âm thanh (nếu có)
+            GameManager.Instance.PlaySFX(_breakSfx);
             // 2. Tạo các mảnh vỡ văng ra
             for (int i = 0; i < _numberOfFragments; i++)
             {

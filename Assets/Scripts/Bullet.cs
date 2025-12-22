@@ -26,11 +26,16 @@ public class Bullet : MonoBehaviour {
         if (_hasExploded) return;
         _hasExploded = true;
 
+        // Nếu đạn đập vào tường và biến mất, hãy đảm bảo tắt Slow-mo
+        if (GameManager.Instance != null) {
+            GameManager.Instance.ToggleSlowMo(false);
+        }
+
         if (_explosionPrefab != null) {
             var explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(explosion, 1f);
         }
 
         Destroy(gameObject);
-    }
+}
 }

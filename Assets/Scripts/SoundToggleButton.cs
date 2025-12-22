@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Audio;
 
 public class SoundToggleButton : MonoBehaviour
 {
@@ -16,13 +15,10 @@ public class SoundToggleButton : MonoBehaviour
 
     void Start()
     {
-        if (GameManager.Instance != null && GameManager.Instance.isPaused == false) {
-             _isSoundOn = true;
-             _buttonImage.sprite = _onSprite;
-        } else {
-             _isSoundOn = false;
-             _buttonImage.sprite = _offSprite;
-        }
+        // Luôn đọc từ PlayerPrefs để hiển thị đúng icon Loa khi chuyển cảnh
+        int soundSetting = PlayerPrefs.GetInt("Setting_Sound", 1);
+        _isSoundOn = (soundSetting == 1);
+        _buttonImage.sprite = _isSoundOn ? _onSprite : _offSprite;
     }
 
     public void ToggleButton()
@@ -30,9 +26,18 @@ public class SoundToggleButton : MonoBehaviour
         _isSoundOn = !_isSoundOn;
         _buttonImage.sprite = _isSoundOn ? _onSprite : _offSprite;
 
+        // Gửi lệnh thay đổi tới Manager tương ứng của Scene đó
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ToggleSound();
+        }
+        else
+        {
+            MainMenuManager mainMenu = Object.FindFirstObjectByType<MainMenuManager>();
+            if (mainMenu != null)
+            {
+                mainMenu.ToggleSound();
+            }
         }
     }
 }

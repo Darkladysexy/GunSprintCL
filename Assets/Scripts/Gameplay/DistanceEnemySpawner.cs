@@ -54,7 +54,15 @@ public class DistanceEnemySpawner : MonoBehaviour
 
     void Start(){
         if (!follow || !pathA || !pathB){ enabled = false; return; }
-        _nextMark = firstSpawnAt;
+
+        // SỬA TẠI ĐÂY: 
+        // Lấy vị trí hiện tại của súng trên trục tiến độ (mét).
+        // Nếu súng bắt đầu ở -80m (Start Upgrade), giá trị này sẽ là 80m.
+        float currentGunMeters = ProjectedMeters(follow.position);
+
+        // Đặt mốc sinh quái tiếp theo bắt đầu từ vị trí súng + khoảng cách xuất hiện đầu tiên.
+        // Điều này giúp bỏ qua việc spawn quái ở đoạn đường súng đã "nhảy" qua.
+        _nextMark = currentGunMeters + firstSpawnAt;
     }
 
     void Update(){
@@ -62,6 +70,8 @@ public class DistanceEnemySpawner : MonoBehaviour
         if (!autoLoop) return;
 
         float progress = ProjectedMeters(follow.position); // tiến độ của súng dọc A→B
+        
+        // Chỉ sinh quái khi súng tiến tới gần mốc _nextMark tiếp theo
         while (progress >= _nextMark && _alive.Count < maxAlive){
             SpawnAtMeters(_nextMark + spawnAhead, null, null);
             _nextMark += spawnStep;
@@ -70,28 +80,28 @@ public class DistanceEnemySpawner : MonoBehaviour
 
     // ===== API cho Levels & Infinity =====
     public GameObject SpawnAtMeters(float metersAlong, bool? forceSword, bool? forceShield) {
+        // Ép Unity cập nhật trạng thái vật lý mới nhất của Map vừa sinh ra
+        Physics.SyncTransforms(); 
+
         Vector3 f = PathForward();
         Vector3 r = Vector3.Cross(Vector3.up, f);
         Vector3 pos = PathOrigin() + f * metersAlong + r * Random.Range(-lateralRange, lateralRange);
 
-        // KIỂM TRA SÀN TRƯỚC KHI SPAWN
         if (useGroundRaycast) {
             Vector3 down = DownDir();
             Vector3 up = -down;
-            Vector3 start = pos + up * rayHeight;
+            // Tăng rayHeight lên cao (100) và bắn tia dài hơn (200) để đảm bảo luôn trúng sàn
+            Vector3 start = pos + up * 100f; 
 
-            // Thực hiện bắn tia Raycast xuống dưới
-            if (Physics.Raycast(start, down, out var hit, rayHeight * 2f, groundMask)) {
-                // Nếu trúng sàn, cập nhật lại vị trí Y chính xác theo sàn
+            if (Physics.Raycast(start, down, out var hit, 200f, groundMask)) {
                 pos.y = hit.point.y;
             } else {
-                // QUAN TRỌNG: Nếu không tìm thấy sàn ở dưới vị trí này, hủy spawn
-                Debug.Log("Không có sàn tại mốc " + metersAlong + "m - Hủy Spawn.");
+                // Nếu không thấy sàn bên dưới mốc này, không sinh quái để tránh quái rơi vào hư vô
+                Debug.LogWarning($"[Spawner] Không thấy sàn tại {metersAlong}m. Kiểm tra Layer của Map!");
                 return null; 
             }
         }
 
-        // Chỉ chạy đoạn code dưới đây nếu đã tìm thấy sàn hợp lệ
         bool useSword = forceSword ?? (Random.value < swordRate);
         bool withShield = forceShield ?? (!useSword && Random.value < shieldRate);
         var prefab = useSword && prefabs.sword ? prefabs.sword :
@@ -108,19 +118,22 @@ public class DistanceEnemySpawner : MonoBehaviour
 
     // ===== Math helpers =====
     Vector3 PathOrigin(){ return new Vector3(pathA.position.x, 0f, pathA.position.z); }
+    
     Vector3 PathForward(){
         Vector3 dir = pathB.position - pathA.position; dir.y = 0f;
         return dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.forward;
     }
+    
     float ProjectedMeters(Vector3 worldPos){
         Vector3 f = PathForward();
         Vector3 d = worldPos - pathA.position; d.y = 0f;
         return Vector3.Dot(d, f);
     }
+    
     Vector3 DownDir(){
         return rayDownMode switch {
             DownMode.SpawnerUp => -transform.up,
-            DownMode.Custom    => (customDown.sqrMagnitude>0.0001f ? customDown.normalized : Vector3.down),
+            DownMode.Custom    => (customDown.sqrMagnitude > 0.0001f ? customDown.normalized : Vector3.down),
             _                  => Vector3.down
         };
     }
@@ -136,7 +149,7 @@ public class DistanceEnemySpawner : MonoBehaviour
         float m = previewStart;
         for (int i = 0; i < previewCount; i++, m += previewStepMeters){
             Vector3 r = Vector3.Cross(Vector3.up, f);
-            Vector3 p = a + f * m; // center-line preview
+            Vector3 p = a + f * m; 
             Gizmos.color = Color.green; Gizmos.DrawSphere(p, 0.15f);
             if (useGroundRaycast){
                 Vector3 down = DownDir(), up = -down;

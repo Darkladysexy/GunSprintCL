@@ -5,7 +5,7 @@ public class LevelModeDistance : MonoBehaviour
 {
     [System.Serializable]
     public class Level {
-        public string levelName; // Tên level (tùy chọn)
+        public string levelName; 
         public GameObject[] mapPrefabs;
         public int enemies = 10;
         public float firstMark = 18f;
@@ -19,68 +19,95 @@ public class LevelModeDistance : MonoBehaviour
     [SerializeField] private GameObject gunObject; 
     [SerializeField] private Level[] levels;
 
+    [Header("Settings")]
+    [SerializeField] private float finishOffset = 15f; 
+
     void Start()
     {
-        // Chỉ chạy logic Level nếu đang ở chế độ chơi Levels
         if (GameManager.Instance != null && GameManager.Instance.CurrentMode == GameMode.Levels)
             StartCoroutine(Run());
     }
 
     IEnumerator Run()
     {
-        // Vòng lặp vô tận để người chơi có thể chơi liên tục các level
         while (true)
         {
-            // Lấy chỉ số level hiện tại từ GameManager (đã lưu trong PlayerPrefs)
-            int currentIdx = GameManager.Instance.CurrentLevelIndex;
+            // 1. Lấy chỉ số level thực tế từ bộ nhớ
+            int currentLevelProgress = GameManager.Instance.CurrentLevelIndex;
+            int levelToLoad;
 
-            // Nếu người chơi đã vượt quá số lượng level thiết kế, có thể reset về 0 hoặc chơi lại level cuối
-            if (currentIdx >= levels.Length)
+            // 2. Logic logic chọn Level:
+            // Nếu level hiện tại >= 3 (tức là từ Level 4 trở đi, vì index bắt đầu từ 0)
+            if (currentLevelProgress >= 3)
             {
-                currentIdx = 0; 
-                // Tùy chọn: GameManager.Instance.ResetProgress(); // Nếu muốn reset hoàn toàn
+                // Chọn ngẫu nhiên index 0, 1 hoặc 2 (tương ứng Lv 1, 2, 3)
+                levelToLoad = Random.Range(0, 3);
+            }
+            else
+            {
+                // Ngược lại thì đi theo đúng thứ tự tuyến tính
+                levelToLoad = currentLevelProgress;
             }
 
-            // 1. Khởi tạo trạng thái cho Level mới
-            GameManager.Instance.ResetLevelScore(); // Reset điểm riêng của màn chơi đó
-            GameManager.Instance.UpdateLevelUI();    // Cập nhật text hiển thị "Level X"
+            // Kiểm tra an toàn nếu mảng levels bị trống hoặc index vượt quá
+            if (levelToLoad >= levels.Length) levelToLoad = 0;
 
-            // 2. Dọn dẹp map cũ và reset vị trí súng
+            // 3. Khởi tạo trạng thái cho Level mới
+            GameManager.Instance.ResetLevelScore();
+            GameManager.Instance.UpdateLevelUI(); // Vẫn hiện "Level 4, 5..." dựa trên progress thực
+
+            // 4. Dọn dẹp map cũ và reset súng
             if (mapRoot) { foreach (Transform child in mapRoot) Destroy(child.gameObject); }
             if (gunObject) GameManager.Instance.ResetGunState(gunObject, new Vector3(2, 1, 0), new Vector3(0, -90, 0));
+            if (finishStackRoot) finishStackRoot.SetActive(false);
 
-            yield return new WaitForSeconds(0.2f);
+            yield return null;
 
-            // 3. Tạo môi trường (Map)
-            var lv = levels[currentIdx];
+            // 5. Tạo môi trường từ levelToLoad đã chọn
+            var lv = levels[levelToLoad];
             if (lv.mapPrefabs.Length > 0) 
+            {
                 Instantiate(lv.mapPrefabs[Random.Range(0, lv.mapPrefabs.Length)], mapRoot);
+            }
 
-            // 4. Sinh quái dọc đường theo thông số của level hiện tại
+            // Đợi hệ thống vật lý sẵn sàng
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+
+            // 6. Sinh quái dựa trên cấu hình của level được chọn
             float mark = lv.firstMark;
-            for (int k = 0; k < lv.enemies; k++, mark += lv.stepMeters)
-                spawner.SpawnAtMeters(mark, null, null);
+            for (int k = 0; k < lv.enemies; k++)
+            {
+                GameObject enemy = null;
+                int attempts = 0;
+                while (enemy == null && attempts < 3)
+                {
+                    enemy = spawner.SpawnAtMeters(mark, null, null);
+                    if (enemy == null) {
+                        attempts++;
+                        yield return new WaitForFixedUpdate();
+                    }
+                }
+                mark += lv.stepMeters;
+            }
 
-            // 5. Chờ người chơi tiêu diệt hết quái vật trên đường
+            // 7. Đặt Finish Stack
+            if (finishStackRoot)
+            {
+                float finalX = -(mark + finishOffset);
+                finishStackRoot.transform.position = new Vector3(finalX, 1f, 0f);
+            }
+
+            // 8. Chờ hoàn thành
             while (spawner.AliveCount > 0) yield return null;
 
-            // 6. Kích hoạt cột mốc kết thúc (Finish Stack)
             if (finishStackRoot)
             {
                 finishStackRoot.SetActive(true);
-                
-                // Chờ cho đến khi đạn bắn trúng stack (GameManager.WinLevel sẽ đặt IsLevelFinished = true)
                 while (!GameManager.Instance.IsLevelFinished) yield return null;
-                
-                // Chờ cho đến khi người chơi nhấn nút "Next Level" trên Win Canvas
-                // Nút này sẽ gọi GameManager.NextLevel() để đặt IsLevelFinished = false
                 while (GameManager.Instance.IsLevelFinished) yield return null;
-                
                 finishStackRoot.SetActive(false);
             }
-            
-            // Sau khi thoát khỏi vòng lặp chờ, code sẽ quay lại đầu 'while(true)' 
-            // và lấy CurrentLevelIndex mới để nạp level tiếp theo.
         }
     }
 }

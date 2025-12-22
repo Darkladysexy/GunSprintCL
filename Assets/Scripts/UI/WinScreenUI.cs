@@ -17,8 +17,7 @@ public class WinScreenUI : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            // Nếu bạn muốn tự động tăng level và load màn mới
-            // Bạn có thể gọi trực tiếp logic lưu và chuyển cảnh của GameManager
+            GameManager.Instance.PlaySFX(GameManager.Instance.ClickSfx);
             int nextLvl = PlayerPrefs.GetInt("current_level_index", 0) + 1;
             PlayerPrefs.SetInt("current_level_index", nextLvl);
             PlayerPrefs.Save();

@@ -7,6 +7,12 @@ public class Enemy : MonoBehaviour
     [Header("Animator")]
     [SerializeField] private Animator _anim; // Triggers: Attack, Hit, Die, Shield
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _enemyAudioSource;
+    [SerializeField] private AudioClip _hitSfx;
+    [SerializeField] private AudioClip _shieldBreakSfx;
+    [SerializeField] private AudioClip _deathSfx;
+
     [Header("Gameplay")]
     [SerializeField] private bool _hasShield = false;
     [SerializeField] private int _scoreValue = 10;
@@ -124,6 +130,7 @@ public class Enemy : MonoBehaviour
         if (GameManager.Instance) GameManager.Instance.ToggleSlowMo(false);
 
         if (_hasShield) {
+            if (_enemyAudioSource && _shieldBreakSfx) _enemyAudioSource.PlayOneShot(_shieldBreakSfx);
             _hasShield = false;
             PlayShield();
             if (_shieldBreakFx) { 
@@ -144,6 +151,7 @@ public class Enemy : MonoBehaviour
             GameManager.Instance.ToggleSlowMo(false);
         }
         if (_deathFx) { 
+            if (_enemyAudioSource && _deathSfx) _enemyAudioSource.PlayOneShot(_deathSfx);
             var fx = Instantiate(_deathFx, transform.position, transform.rotation); 
             Destroy(fx, 2f); 
         }
