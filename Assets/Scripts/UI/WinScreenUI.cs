@@ -12,7 +12,6 @@ public class WinScreenUI : MonoBehaviour
             _nextLevelButton.onClick.AddListener(OnNextLevelClicked);
     }
 
-    // Cập nhật lại file Assets\Scripts\UI\WinScreenUI.cs
     private void OnNextLevelClicked()
     {
         if (GameManager.Instance != null)

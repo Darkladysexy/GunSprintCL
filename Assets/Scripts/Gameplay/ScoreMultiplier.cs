@@ -13,16 +13,15 @@ public class ScoreMultiplier : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Va cham voi: " + collision.gameObject.name); // Dòng kiểm tra
+        Debug.Log("Va cham voi: " + collision.gameObject.name); 
         if (_isHit) return;
 
         // Kiểm tra nếu va chạm với đạn
         if (collision.gameObject.GetComponent<Bullet>() != null)
         {
             _isHit = true;
-            // 1. Phát hiệu ứng âm thanh (nếu có)
             GameManager.Instance.PlaySFX(_breakSfx);
-            // 2. Tạo các mảnh vỡ văng ra
+            
             for (int i = 0; i < _numberOfFragments; i++)
             {
                 if (_fragmentPrefab != null)
@@ -34,13 +33,12 @@ public class ScoreMultiplier : MonoBehaviour
                 }
             }
 
-            // 3. Gọi GameManager để tính điểm x và hiện Win UI
+            // Gọi GameManager để tính điểm x và hiện Win UI
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.WinLevel(_multiplier);
             }
 
-            // 4. Chỉ ẩn stack này đi
             gameObject.SetActive(false);
         }
     }

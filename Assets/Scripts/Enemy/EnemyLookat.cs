@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class EnemyLookAt : MonoBehaviour
 {
-    [SerializeField] private Transform target;       // Camera hoặc Gun
-    [SerializeField] private float turnSpeed = 360f; // độ/giây
-
+    [SerializeField] private Transform target;       
+    [SerializeField] private float turnSpeed = 360f; 
     void LateUpdate(){
         if (!target) return;
         Vector3 dir = target.position - transform.position; dir.y = 0f;

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 [System.Serializable]
 public class EnemyPrefabs
 {
-    public GameObject idle;   // đứng yên
-    public GameObject sword;  // cầm kiếm (có anim Attack)
-    public GameObject basic;  // bản cơ bản (dùng để bật khiên)
+    public GameObject idle;   
+    public GameObject sword;  
+    public GameObject basic;  
 }
 
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Refs")]
-    [SerializeField] private Transform followTarget; // Camera hoặc súng
+    [SerializeField] private Transform followTarget; 
     [SerializeField] private EnemyPrefabs prefabs;
 
     [Header("Spawn Area")]

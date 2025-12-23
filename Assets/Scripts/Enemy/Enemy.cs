@@ -86,7 +86,7 @@ public class Enemy : MonoBehaviour
         if (_dead) return;
         _dead = true;
 
-        // QUAN TRỌNG: Tắt Collider ngay lập tức để súng xuyên qua xác
+        //Tắt Collider ngay lập tức để súng xuyên qua xác
         if (_col) _col.enabled = false; 
 
         if (_anim) {
@@ -171,7 +171,6 @@ public class Enemy : MonoBehaviour
             elapsed += Time.deltaTime;
             float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
             foreach (var r in rs) {
-                // Chỉ hoạt động nếu Material dùng Shader hỗ trợ Transparent/Fade
                 if (r.material.HasProperty("_Color")) {
                     Color c = r.material.color;
                     c.a = alpha;

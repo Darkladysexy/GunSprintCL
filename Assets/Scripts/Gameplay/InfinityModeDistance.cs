@@ -7,7 +7,6 @@ public class InfinityModeDistance : MonoBehaviour
     [SerializeField] private Transform gunTransform;      
 
     [Header("Floor Config")]
-    // Thay đổi từ GameObject đơn lẻ sang mảng các Prefab để random
     [SerializeField] private GameObject[] _floorPrefabs; 
     [SerializeField] private Transform _floorRoot;        
     [Tooltip("Chiều dài thực tế của block sàn trong Prefab")]
@@ -60,7 +59,6 @@ public class InfinityModeDistance : MonoBehaviour
     }
 
     void SpawnFloor() {
-        // Kiểm tra xem mảng prefab có dữ liệu không
         if (_floorPrefabs == null || _floorPrefabs.Length == 0) return;
 
         // Chọn ngẫu nhiên một mẫu sàn từ mảng

@@ -7,7 +7,7 @@ public class GunSprint : MonoBehaviour
     [SerializeField] private Transform _spawnPoint;
     [SerializeField] private ParticleSystem _smokeSystem;
     [SerializeField] private LayerMask _targetLayer;
-    [SerializeField] private LayerMask _obstacleLayer; // THÊM: LayerMask cho tường/vật cản
+    [SerializeField] private LayerMask _obstacleLayer; 
     [SerializeField] private Animator _gunAnimator;
 
     [Header("Audio")]

@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public bool IsLevelFinished { get; private set; } = false;
 
     [Header("Audio Clips")]
-    [SerializeField] private AudioSource _sfxSource; // Source để phát hiệu ứng âm thanh
+    [SerializeField] private AudioSource _sfxSource; 
     [SerializeField] public AudioClip ClickSfx;
     [SerializeField] private AudioClip _upgradeSfx;
     [SerializeField] private AudioClip _winSfx;
@@ -40,8 +40,8 @@ public class GameManager : MonoBehaviour
     [Header("Infinity Mode UI")]
     [SerializeField] private GameObject _doneCanvasUI; 
     [SerializeField] private TextMeshProUGUI _metersText; 
-    [SerializeField] private TextMeshProUGUI _bestMetersText; // Text hiện Best trên bảng kết quả
-    [SerializeField] private TextMeshProUGUI _liveBestMetersText; // Text hiện Best khi đang chạy
+    [SerializeField] private TextMeshProUGUI _bestMetersText; 
+    [SerializeField] private TextMeshProUGUI _liveBestMetersText; 
     [SerializeField] private GameObject _newRecordLabel;    
     [SerializeField] private TextMeshProUGUI _totalCoinUpgradeText;
     
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
         CurrentLevelScore = 0;
         IsLevelFinished = false;
 
-        _cachedBestMeters = GetBestMeters(); // Sử dụng hàm có sẵn
+        _cachedBestMeters = GetBestMeters(); 
 
         if (CurrentMode == GameMode.Levels)
         {
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
             if (_infinityUIContainer) _infinityUIContainer.SetActive(true);
             UpdateMetersUI(0);
             
-            // Cập nhật text Best ngay từ đầu
+            
             if (_liveBestMetersText) _liveBestMetersText.text = "Best: " + Mathf.FloorToInt(_cachedBestMeters) + "m";
             if (_newRecordLabel) _newRecordLabel.SetActive(false);
         }
@@ -129,7 +129,6 @@ public class GameManager : MonoBehaviour
         UpdateScoreUI(); 
         // PlayMusic();
     }
-    // Hàm phát âm thanh hiệu ứng
     public void PlaySFX(AudioClip clip) {
         if (_sfxSource && clip) _sfxSource.PlayOneShot(clip);
     }
@@ -217,7 +216,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Gộp 2 hàm UpdateMetersUI bị trùng làm 1
+    
     public void UpdateMetersUI(float currentMeters) {
         if (_infinityUIContainer != null) {
             var txtMeters = _infinityUIContainer.GetComponentInChildren<TextMeshProUGUI>();
@@ -302,7 +301,7 @@ public class GameManager : MonoBehaviour
     if (!isPaused) {
         Time.timeScale = enabled ? 0.2f : 1f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        if (enabled) PlaySFX(_slowMoSfx); // Phát tiếng slow-mo
+        if (enabled) PlaySFX(_slowMoSfx); 
     }
 }
 
@@ -381,7 +380,7 @@ public class GameManager : MonoBehaviour
             else _musicSource.Pause();
             _musicSource.mute = !isOn; 
         }
-        // Tắt cả SFX nếu cần
+        
         if (_sfxSource) _sfxSource.mute = !isOn;
     }
     public bool IsSoundOn() {

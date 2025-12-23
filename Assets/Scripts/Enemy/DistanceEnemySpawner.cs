@@ -55,7 +55,6 @@ public class DistanceEnemySpawner : MonoBehaviour
     void Start(){
         if (!follow || !pathA || !pathB){ enabled = false; return; }
 
-        // SỬA TẠI ĐÂY: 
         // Lấy vị trí hiện tại của súng trên trục tiến độ (mét).
         // Nếu súng bắt đầu ở -80m (Start Upgrade), giá trị này sẽ là 80m.
         float currentGunMeters = ProjectedMeters(follow.position);
