@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GunSprint : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class GunSprint : MonoBehaviour
     [SerializeField] private Animator _gunAnimator;
 
     [Header("Audio")]
-    [SerializeField] private AudioSource _gunAudioSource;
     [SerializeField] private AudioClip _shootSfx;
     [SerializeField] private AudioClip _bounceSfx;
 
@@ -46,11 +46,11 @@ public class GunSprint : MonoBehaviour
     {
         // 1. PHÍM TẮT HỆ THỐNG
         if (Input.GetKeyDown(KeyCode.R)) {
-            GameManager.Instance.Replay(); // Chơi lại màn hiện tại
+            GameManager.Instance.Replay(); 
             return;
         }
         if (Input.GetKeyDown(KeyCode.N)) {
-            GameManager.Instance.ResetProgress(); // Xóa sạch dữ liệu
+            GameManager.Instance.ResetProgress(); 
             return;
         }
 
@@ -69,22 +69,16 @@ public class GunSprint : MonoBehaviour
         if (transform.position.y < _killY)
         {
             if (GameManager.Instance.CurrentMode == GameMode.Infinity)
-            {
                 GameManager.Instance.ShowDoneScreen(_maxDistanceReached);
-            }
             else
-            {
                 GameManager.Instance.GameOver();
-            }
             return; 
         }
 
         if (GameManager.Instance.CurrentMode == GameMode.Infinity && GameManager.Instance.Ammo <= 0)
         {
             if (_rb.linearVelocity.magnitude < 0.1f) 
-            {
                 GameManager.Instance.ShowDoneScreen(_maxDistanceReached);
-            }
         }
 
         _rb.angularVelocity = new Vector3(0, 0, Mathf.Clamp(_rb.angularVelocity.z, -_maxAngularVelocity, _maxAngularVelocity));
@@ -92,16 +86,18 @@ public class GunSprint : MonoBehaviour
         // 4. XỬ LÝ BẮN SÚNG
         if (Input.GetMouseButtonDown(0))
         {
+            if (GameManager.Instance.isPaused) return;
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+
             if (GameManager.Instance.CurrentMode == GameMode.Infinity)
                 if (!GameManager.Instance.TryConsumeAmmo(1)) return;
 
-            if (_gunAudioSource && _shootSfx) _gunAudioSource.PlayOneShot(_shootSfx);
+            if (_shootSfx != null) GameManager.Instance.PlaySFX(_shootSfx);
 
-            // SỬA LỖI SLOW-MO: Kiểm tra xem kẻ địch có bị vật cản che khuất không
+            // Xử lý tia Raycast cho Slow-mo
             LayerMask combinedMask = _targetLayer | _obstacleLayer;
             if (Physics.Raycast(_spawnPoint.position, _spawnPoint.forward, out RaycastHit hit, float.PositiveInfinity, combinedMask))
             {
-                // Chỉ bật Slow-mo nếu vật thể đầu tiên tia ngắm chạm vào là Enemy
                 if (((1 << hit.collider.gameObject.layer) & _targetLayer) != 0)
                 {
                     GameManager.Instance.ToggleSlowMo(true);
@@ -142,7 +138,9 @@ public class GunSprint : MonoBehaviour
         if (collision.gameObject.CompareTag("Floor"))
         {
             _isTouchingFloor = true;
-            if (_gunAudioSource && _bounceSfx) _gunAudioSource.PlayOneShot(_bounceSfx);
+            
+            if (_bounceSfx != null) GameManager.Instance.PlaySFX(_bounceSfx);
+
             var bounceForce = collision.relativeVelocity.magnitude * 0.2f;
             _rb.AddForce(Vector3.up * bounceForce, ForceMode.Impulse);
         }

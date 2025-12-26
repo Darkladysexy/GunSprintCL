@@ -355,7 +355,12 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    public void NotifyEnemyKilled() { if (CurrentMode == GameMode.Infinity) AddAmmo(2); PlaySFX(_reloadAmmoSfx); }
+    public void NotifyEnemyKilled() { 
+        if (CurrentMode == GameMode.Infinity) {
+            AddAmmo(2); 
+            PlaySFX(_reloadAmmoSfx); // Chỉ phát tiếng này khi ở mode Infinity
+        }
+    }
 
     public void PlayMusic() {
         if (_musicSource && _backgroundMusic && !_musicSource.isPlaying) {
