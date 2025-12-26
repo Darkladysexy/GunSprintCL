@@ -22,7 +22,7 @@ public class DistanceEnemySpawner : MonoBehaviour
     // ---------- Lateral (ngang đường) ----------
     [Header("Lateral")]
     [Tooltip("0 = spawn đúng center-line A→B. >0 = cho phép ngẫu nhiên trái/phải theo right của A→B")]
-    [SerializeField] private float lateralRange = 0f; // để 0 nếu bạn muốn đúng trục
+    [SerializeField] private float lateralRange = 0f; 
 
     // ---------- Ground snap ----------
     public enum DownMode { WorldY, SpawnerUp, Custom }
