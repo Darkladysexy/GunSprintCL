@@ -3,6 +3,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour {
     [SerializeField] private GameObject _explosionPrefab;
     [SerializeField] private TrailRenderer _trail;
+    [SerializeField] private float _lifeTime = 2f;
 
     private Rigidbody _rb;
     private bool _hasExploded = false;
@@ -12,7 +13,9 @@ public class Bullet : MonoBehaviour {
         _rb = GetComponent<Rigidbody>();
         _bulletCollider = GetComponent<Collider>();
         if (_trail != null) _trail.Clear();
+        Destroy(gameObject, _lifeTime);
     }
+
 
     public void Init(Vector3 velocity, Collider gunCollider) {
         _rb.linearVelocity = velocity;
