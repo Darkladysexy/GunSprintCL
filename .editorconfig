@@ -1,0 +1,63 @@
+# Shared code style for every IDE (Visual Studio, Rider, VS Code).
+# Based on the Unity 6 C# style guide: Allman braces, 4 spaces, explicit braces,
+# _camelCase private fields, k_ constants and s_ static fields.
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+[*.cs]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+# Braces and new lines (Allman)
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_prefer_braces = true:warning
+
+# Spacing
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_around_binary_operators = before_and_after
+
+# Language rules
+csharp_style_var_when_type_is_apparent = true:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+
+# Naming: private fields use _camelCase
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_case
+dotnet_naming_rule.private_fields_underscore.severity = suggestion
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+
+# Naming: constants use k_PascalCase
+dotnet_naming_rule.constants_k_prefix.symbols = constant_fields
+dotnet_naming_rule.constants_k_prefix.style = k_pascal_case
+dotnet_naming_rule.constants_k_prefix.severity = suggestion
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+dotnet_naming_style.k_pascal_case.required_prefix = k_
+dotnet_naming_style.k_pascal_case.capitalization = pascal_case
+
+# Naming: private static fields use s_camelCase (rule order matters: keep after constants)
+dotnet_naming_rule.static_fields_s_prefix.symbols = static_fields
+dotnet_naming_rule.static_fields_s_prefix.style = s_camel_case
+dotnet_naming_rule.static_fields_s_prefix.severity = suggestion
+dotnet_naming_symbols.static_fields.applicable_kinds = field
+dotnet_naming_symbols.static_fields.applicable_accessibilities = private
+dotnet_naming_symbols.static_fields.required_modifiers = static
+dotnet_naming_style.s_camel_case.required_prefix = s_
+dotnet_naming_style.s_camel_case.capitalization = camel_case
+
+[*.{json,asmdef}]
+indent_style = space
+indent_size = 2

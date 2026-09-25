@@ -82,3 +82,11 @@
 *.so   filter=lfs diff=lfs merge=lfs -text
 *.dylib filter=lfs diff=lfs merge=lfs -text
 *.pdf  filter=lfs diff=lfs merge=lfs -text
+# --------------------------
+# NGOẠI LỆ (đặt cuối file để ghi đè các quy tắc ở trên)
+# --------------------------
+# ScriptableObject data (event channels, configs, audio cues) is plain YAML:
+# keep it as diffable text so balance changes show up in code review.
+Assets/Data/**/*.asset -binary text eol=lf diff merge
+# Tiny generated UI icons are stored directly in git (no LFS round-trip needed).
+Assets/Textures/UI/*.png -filter -diff -merge -text
