@@ -122,7 +122,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _multiplier: 10
+  _targetHit: {fileID: 11400000, guid: 30217f42f0404a7bae56949d7fa5701d, type: 2}
+  _breakCue: {fileID: 11400000, guid: a9ab5cffaaad46dab85abcfe29b6e0a7, type: 2}
   _fragmentPrefab: {fileID: 72452496430060288, guid: 1e242c3e8bc1e734c93e992881cf7713, type: 3}
-  _numberOfFragments: 5
+  _fragmentCount: 5
   _explosionForce: 20
-  _fragmentLifeTime: 2
+  _explosionRadius: 10
+  _fragmentLifetime: 2

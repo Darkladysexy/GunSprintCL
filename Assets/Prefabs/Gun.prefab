@@ -130,6 +130,8 @@ GameObject:
   - component: {fileID: 2074705190640441976}
   - component: {fileID: 6643606904845848224}
   - component: {fileID: 2053888546178364082}
+  - component: {fileID: 5317760211934217729}
+  - component: {fileID: 7043517362195841630}
   m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
@@ -184,7 +186,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 104
   m_CollisionDetection: 0
 --- !u!136 &2074705190640441976
@@ -245,23 +247,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ba51223aeae3324081a250d0308e4ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: cda177b8d2e04267ba75df191b317f98, type: 2}
+  _runState: {fileID: 11400000, guid: 4d17f7ff301941dc84602c4d16576ad5, type: 2}
+  _firePressed: {fileID: 11400000, guid: fda53d4bef2f4e3a9a952a5aa36020f5, type: 2}
+  _restingSpeed: 0.1
+--- !u!114 &5317760211934217729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4324084890110748299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78e93a374e3c435480d98eab3f16f3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: cda177b8d2e04267ba75df191b317f98, type: 2}
+  _bounceCue: {fileID: 11400000, guid: 82fa994176024b269f9356510d5b6f0e, type: 2}
+  _floorTag: Floor
+--- !u!114 &7043517362195841630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4324084890110748299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa09331c53e743a8886ea1a0f9a33462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: cda177b8d2e04267ba75df191b317f98, type: 2}
   _bulletPrefab: {fileID: 8767295667120791613, guid: 310f0d47b929e8e4281674fd7e865bb3, type: 3}
-  _spawnPoint: {fileID: 7147279580477156327}
-  _smokeSystem: {fileID: 3533348333719445868}
-  _targetLayer:
+  _muzzle: {fileID: 7147279580477156327}
+  _muzzleSmoke: {fileID: 3533348333719445868}
+  _targetLayers:
     serializedVersion: 2
     m_Bits: 192
-  _gunAnimator: {fileID: 0}
-  _bulletSpeed: 12
-  _torque: 120
-  _maxTorqueBonus: 150
-  _maxAngularVelocity: 10
-  _forceAmount: 400
-  _maxUpAssist: 200
-  _smokeLength: 1
-  _maxY: 10
-  _floorBounceForce: 0.7
-  _killY: -5
+  _obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _impactEffect: {fileID: 7834434380170384362, guid: 68101499d07aced4aa0ded4acb624942, type: 3}
+  _impactEffectLifetime: 1
+  _shootCue: {fileID: 11400000, guid: b3475e9457344a93bfe7ecb24ed81b4f, type: 2}
 --- !u!1 &5707342761274136691
 GameObject:
   m_ObjectHideFlags: 0

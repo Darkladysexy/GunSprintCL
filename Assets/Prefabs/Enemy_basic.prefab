@@ -390,9 +390,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c98d5943a93f7fc48b8271b98b19f692, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8948906299251449120}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c98d5943a93f7fc48b8271b98b19f692, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1047232367039442676}
   m_SourcePrefab: {fileID: 100100000, guid: c98d5943a93f7fc48b8271b98b19f692, type: 3}
 --- !u!1 &6698914839864486076 stripped
 GameObject:
@@ -453,20 +450,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3beaa71c5b5c21c46834dbd927c1148a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _anim: {fileID: 3007148710022333922}
-  _enemyAudioSource: {fileID: 1047232367039442676}
-  _hitSfx: {fileID: 8300000, guid: d99d046711e150c478079fa116e1f713, type: 3}
-  _shieldBreakSfx: {fileID: 8300000, guid: 17d66110aadfaa94eaaafdcad6218aed, type: 3}
-  _deathSfx: {fileID: 8300000, guid: 2beafcaa639101748a3f11aea7655e93, type: 3}
-  _hasShield: 0
-  _scoreValue: 100
-  _hitFx: {fileID: 0}
-  _shieldBreakFx: {fileID: 0}
-  _deathFx: {fileID: 0}
-  _rb: {fileID: 4333933697575337937}
-  _deathKnockForce: 1
-  _kinematicWhileAlive: 1
-  _freezeYWhileAlive: 1
+  _config: {fileID: 11400000, guid: 3ccf303657c846f1b27abfc65c9cdb81, type: 2}
+  _enemyKilled: {fileID: 11400000, guid: 1830aa259ace4e1fba9a95191782a5a4, type: 2}
+  _animator: {fileID: 3007148710022333922}
+  _rigidbody: {fileID: 4333933697575337937}
 --- !u!54 &4333933697575337937
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -505,8 +492,8 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: c98d5943a93f7fc48b8271b98b19f692, type: 3}
   m_Controller: {fileID: 9100000, guid: 49d18ac157e9f264d9abf1844a359799, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 2
+  m_CullingMode: 1
+  m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -528,102 +515,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc3aa72e09e199540b0ed30dd4fbaa9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 4235934227155947518, guid: e33bd58f18c572744b110f3c1494f28e, type: 3}
-  turnSpeed: 360
---- !u!82 &1047232367039442676
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6698914839864486076}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  _turnSpeed: 360

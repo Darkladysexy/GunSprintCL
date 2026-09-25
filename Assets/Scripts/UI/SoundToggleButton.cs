@@ -1,42 +1,55 @@
+using GunSprint.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SoundToggleButton : MonoBehaviour
+namespace GunSprint.UI
 {
-    private Image _buttonImage;
-    [SerializeField] private Sprite _onSprite;
-    [SerializeField] private Sprite _offSprite;
-    private bool _isSoundOn = true;
-
-    void Awake()
+    /// <summary>
+    /// Toggles the sound setting and shows the matching icon. The setting itself is the single
+    /// source of truth, so every toggle in every scene always shows the same state.
+    /// </summary>
+    [RequireComponent(typeof(Button))]
+    public class SoundToggleButton : MonoBehaviour
     {
-        _buttonImage = GetComponent<Image>();
-    }
+        [SerializeField] private PlayerProgressSO _progress;
+        [SerializeField] private Image _icon;
+        [SerializeField] private Sprite _onSprite;
+        [SerializeField] private Sprite _offSprite;
 
-    void Start()
-    {
-        // Luôn đọc từ PlayerPrefs để hiển thị đúng icon Loa khi chuyển cảnh
-        int soundSetting = PlayerPrefs.GetInt("Setting_Sound", 1);
-        _isSoundOn = (soundSetting == 1);
-        _buttonImage.sprite = _isSoundOn ? _onSprite : _offSprite;
-    }
+        private Button _button;
 
-    public void ToggleButton()
-    {
-        _isSoundOn = !_isSoundOn;
-        _buttonImage.sprite = _isSoundOn ? _onSprite : _offSprite;
-
-        // Gửi lệnh thay đổi tới Manager tương ứng của Scene đó
-        if (GameManager.Instance != null)
+        private void Awake()
         {
-            GameManager.Instance.ToggleSound();
+            _button = GetComponent<Button>();
+            _button.onClick.AddListener(Toggle);
         }
-        else
+
+        private void OnDestroy()
         {
-            MainMenuManager mainMenu = Object.FindFirstObjectByType<MainMenuManager>();
-            if (mainMenu != null)
+            _button.onClick.RemoveListener(Toggle);
+        }
+
+        private void OnEnable()
+        {
+            _progress.SoundChanged += Refresh;
+            Refresh(_progress.IsSoundOn);
+        }
+
+        private void OnDisable()
+        {
+            _progress.SoundChanged -= Refresh;
+        }
+
+        private void Toggle()
+        {
+            _progress.SetSoundOn(!_progress.IsSoundOn);
+        }
+
+        private void Refresh(bool isOn)
+        {
+            if (_icon != null)
             {
-                mainMenu.ToggleSound();
+                _icon.sprite = isOn ? _onSprite : _offSprite;
             }
         }
     }

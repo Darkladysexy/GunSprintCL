@@ -103,8 +103,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0dd88d95dcedef40bdfd172c36cf9cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _explosionPrefab: {fileID: 7834434380170384362, guid: 68101499d07aced4aa0ded4acb624942, type: 3}
   _trail: {fileID: 752264931651501149}
+  _lifetime: 2
 --- !u!54 &6794142053690703960
 Rigidbody:
   m_ObjectHideFlags: 0
