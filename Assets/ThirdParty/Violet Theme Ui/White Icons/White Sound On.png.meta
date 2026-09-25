@@ -1,16 +1,7 @@
 fileFormatVersion: 2
 guid: e66426b52acd2a948999e48ec901d97b
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 8837445301905419745
-    second: White Sound On_0
-  - first:
-      213: -4997613021011504602
-    second: White Sound On_1
-  - first:
-      213: 7285264308947298027
-    second: White Sound On_2
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -117,73 +108,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: White Sound On_0
-      rect:
-        serializedVersion: 2
-        x: 1
-        y: 0
-        width: 339
-        height: 512
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1ed6406eda9e4aa70800000000000000
-      internalID: 8837445301905419745
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: White Sound On_1
-      rect:
-        serializedVersion: 2
-        x: 388
-        y: 111
-        width: 45
-        height: 271
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6221eb59f69e4aab0800000000000000
-      internalID: -4997613021011504602
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: White Sound On_2
-      rect:
-        serializedVersion: 2
-        x: 466
-        y: 56
-        width: 45
-        height: 382
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: be6a2ad3a457a1560800000000000000
-      internalID: 7285264308947298027
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     customData: 
     physicsShape: []
@@ -197,10 +122,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      White Sound On_0: 8837445301905419745
-      White Sound On_1: -4997613021011504602
-      White Sound On_2: 7285264308947298027
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
