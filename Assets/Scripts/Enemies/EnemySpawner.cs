@@ -82,9 +82,24 @@ namespace GunSprint.Enemies
         /// <summary>Spawns one enemy on the ground at the given distance along the track, if there is ground.</summary>
         public Enemy SpawnAt(float distance, System.Random random)
         {
+            return SpawnAt(distance, random, _swordChance, _shieldChance);
+        }
+
+        /// <summary>Same as above with per-level enemy mix.</summary>
+        public Enemy SpawnAt(float distance, System.Random random, float swordChance, float shieldChance)
+        {
             // Floors may have been moved by the pool this frame; make sure raycasts see their new position.
             Physics.SyncTransforms();
-            return SpawnOnGround(distance, random);
+            return SpawnOnGround(distance, random, swordChance, shieldChance);
+        }
+
+        /// <summary>Height of the ground at a distance along the track, if there is ground there.</summary>
+        public bool TryGetGroundHeight(float distance, out float height)
+        {
+            Vector3 probeStart = _track.GetPoint(distance) + Vector3.up * _groundProbeHeight;
+            bool hasGround = Physics.Raycast(probeStart, Vector3.down, out RaycastHit hit, _groundProbeHeight * 2f, _groundMask, QueryTriggerInteraction.Ignore);
+            height = hasGround ? hit.point.y : 0f;
+            return hasGround;
         }
 
         /// <summary>The gun: enemies face it, and auto spawning follows it.</summary>
@@ -116,7 +131,7 @@ namespace GunSprint.Enemies
             Physics.SyncTransforms();
             while (_nextSpawnDistance <= followDistance + _spawnAheadDistance && _active.Count < _maxAlive)
             {
-                SpawnOnGround(_nextSpawnDistance, _autoSpawnRandom);
+                SpawnOnGround(_nextSpawnDistance, _autoSpawnRandom, _swordChance, _shieldChance);
                 _nextSpawnDistance += _spawnSpacing;
             }
         }
@@ -133,7 +148,7 @@ namespace GunSprint.Enemies
             }
         }
 
-        private Enemy SpawnOnGround(float distance, System.Random random)
+        private Enemy SpawnOnGround(float distance, System.Random random, float swordChance, float shieldChance)
         {
             float lateral = _lateralRange > 0f ? ((float)random.NextDouble() * 2f - 1f) * _lateralRange : 0f;
             Vector3 position = _track.GetPoint(distance) + _track.Right * lateral;
@@ -147,8 +162,8 @@ namespace GunSprint.Enemies
 
             position.y = hit.point.y;
 
-            bool hasSword = random.NextDouble() < _swordChance;
-            bool hasShield = !hasSword && random.NextDouble() < _shieldChance;
+            bool hasSword = random.NextDouble() < swordChance;
+            bool hasShield = !hasSword && random.NextDouble() < shieldChance;
             PrefabPool<Enemy> pool = hasSword ? _swordPool : _basicPool;
 
             Enemy enemy = pool.Get(position, Quaternion.LookRotation(-_track.Forward));

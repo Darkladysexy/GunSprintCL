@@ -12,9 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88ef1de94626440c89345ce463154f0c, type: 3}
   m_Name: Level_02
   m_EditorClassIdentifier: 
-  _mapPrefabs:
-  - {fileID: 3633395945693227354, guid: c02a16e5ef75def459b76213211f3cec, type: 3}
-  _enemyCount: 2
-  _firstEnemyDistance: 4.0
+  _segments:
+  - {fileID: 296357274214913749, guid: 033b0de10bb240f8b05d63d1b031a998, type: 3}
+  - {fileID: 805052110646791338, guid: 191f1841ad0f4d8e9fd38e402db4f9e0, type: 3}
+  - {fileID: 296357274214913749, guid: 033b0de10bb240f8b05d63d1b031a998, type: 3}
+  _segmentGap: 1.12
+  _enemyDensity: 0.42
+  _swordChance: 0.16
+  _shieldChance: 0.11
+  _mapPrefabs: []
+  _enemyCount: 0
+  _firstEnemyDistance: 5.0
   _enemySpacing: 5.0
   _finishOffset: 0.0

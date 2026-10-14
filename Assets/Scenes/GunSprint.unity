@@ -641,13 +641,43 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2031f783ad3f4bd793222e28d00ba815, type: 2}
   - {fileID: 11400000, guid: 8bc740606d5942c2b791af7d06bfad64, type: 2}
   - {fileID: 11400000, guid: 871e318fb8cd493aa4ad42b55ad6a29f, type: 2}
+  - {fileID: 11400000, guid: d7d9a75c6b9e44ca906c026907783871, type: 2}
+  - {fileID: 11400000, guid: c9e962a07be24405bd599769eba9a0d3, type: 2}
+  - {fileID: 11400000, guid: b4c0ae1250e34d17a42d022b9463881d, type: 2}
+  - {fileID: 11400000, guid: 688021c6e8cf44858c65c0d92dc16884, type: 2}
+  - {fileID: 11400000, guid: e325593273bf42aaab3052143f7a493e, type: 2}
+  - {fileID: 11400000, guid: 52ee80391c0943a7b805ef317f84a4e7, type: 2}
+  - {fileID: 11400000, guid: c246a449a8d741e284cc8d9951688145, type: 2}
+  - {fileID: 11400000, guid: 47b595b60fe8487d9151fc53a4bca15b, type: 2}
+  - {fileID: 11400000, guid: 48b5da4720244780972e35549b32ce78, type: 2}
+  - {fileID: 11400000, guid: 0d69eb3552794f38be2a0a4460488189, type: 2}
+  - {fileID: 11400000, guid: 4e1430cb3979472facf586cb3616911f, type: 2}
+  - {fileID: 11400000, guid: 6e54c14ac4154870a7313076c0729a25, type: 2}
+  - {fileID: 11400000, guid: 9dec8a7ea9554666a2dedc40510a51b4, type: 2}
+  - {fileID: 11400000, guid: 4e9bd62ffb3e4ad2818d50090f9a4162, type: 2}
+  - {fileID: 11400000, guid: 2a4b6656cf6c49e79c58be411301cc8a, type: 2}
+  - {fileID: 11400000, guid: 3b76897759e94208a313a01b10799fd8, type: 2}
+  - {fileID: 11400000, guid: 92a83502c7874b63afbd5eb26c6fa023, type: 2}
+  - {fileID: 11400000, guid: aa8088e01d5c45ee95f13cb8875a3226, type: 2}
+  - {fileID: 11400000, guid: 72cec537f9dd4503a5f4477b0b37986c, type: 2}
+  - {fileID: 11400000, guid: 72908ac6001a42c5b9f28b30bb66fa0f, type: 2}
+  - {fileID: 11400000, guid: e7acd066f35c4778a452a50018425fc6, type: 2}
+  - {fileID: 11400000, guid: 1ea19d180a97466e90797f3972b6c00b, type: 2}
+  - {fileID: 11400000, guid: 88416205376c435dafbfe2cc5a515830, type: 2}
+  - {fileID: 11400000, guid: 30e79f1c63d6446e8a37cfef97cad54b, type: 2}
+  - {fileID: 11400000, guid: aadfb7cc5f7c46e3bdd2efde65bd3f10, type: 2}
+  - {fileID: 11400000, guid: 8ae099dcd6624292965546790c73c805, type: 2}
+  - {fileID: 11400000, guid: 6be6a77245b9457f96245719a32d1e09, type: 2}
   _spawner: {fileID: 1296108900}
   _mapRoot: {fileID: 960966232}
   _finishTargets: {fileID: 510981130}
   _targetHit: {fileID: 11400000, guid: 30217f42f0404a7bae56949d7fa5701d, type: 2}
   _gunStartPosition: {x: 2, y: 1, z: 0}
   _gunStartRotation: {x: 0, y: -90, z: 0}
-  _finishTargetsHeight: 1
+  _finishTargetsHeight: 1.6
+  _segmentHeight: -10
+  _segmentStartBack: 5
+  _finishInset: 4
 --- !u!4 &977056005
 Transform:
   m_ObjectHideFlags: 0
@@ -705,11 +735,24 @@ MonoBehaviour:
   _spawner: {fileID: 1296108900}
   _floorPrefabs:
   - {fileID: 258376656739999712, guid: 9679b06d2f3bd174dbcbbdfb54f813f5, type: 3}
-  - {fileID: 5898208097710715928, guid: c02a16e5ef75def459b76213211f3cec, type: 3}
-  - {fileID: 1453832660346604155, guid: 00667c52921a45847a65635a85837ad3, type: 3}
+  - {fileID: 161549545293832814, guid: 033b0de10bb240f8b05d63d1b031a998, type: 3}
+  - {fileID: 993230443412000066, guid: 87b7ae56b16047908a185f9cd3278e57, type: 3}
+  - {fileID: 801165350553309539, guid: eda25bacc2c04c8bb8914b4943fdc888, type: 3}
+  - {fileID: 1174229758706574299, guid: 4cda2d0a466c425a80dc43e8b6b4c17d, type: 3}
+  - {fileID: 136031445434990209, guid: 39ea02f827a7484bb0cd1544e0b297e8, type: 3}
+  - {fileID: 1211325624340431313, guid: e589fd78909a41a98f3642d6168fb6a8, type: 3}
+  - {fileID: 289565717797135043, guid: 733566146d6a40bc8bc5864a7a2cced2, type: 3}
+  - {fileID: 195649132456613585, guid: f63078a015a14a29af28aca21b06db39, type: 3}
+  - {fileID: 508960140764776440, guid: 191f1841ad0f4d8e9fd38e402db4f9e0, type: 3}
+  - {fileID: 1022311973814006527, guid: 54a0c5970ef24706a73f9dcc969cf213, type: 3}
+  - {fileID: 557404996469316389, guid: 34b516fe18c542029e3327d120e1e4a8, type: 3}
   _floorRoot: {fileID: 960966232}
   _floorLength: 20
-  _floorGap: 5
+  _floorGap: 2
+  _maxGapEasy: 4.5
+  _maxGapHard: 8
+  _difficultyDistance: 600
+  _heightVariation: 1.2
   _floorHeight: -10
   _floorRotation: {x: 0, y: 90, z: 0}
   _buildAheadDistance: 40

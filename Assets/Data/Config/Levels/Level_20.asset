@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ef1de94626440c89345ce463154f0c, type: 3}
+  m_Name: Level_20
+  m_EditorClassIdentifier: 
+  _segments:
+  - {fileID: 296357274214913749, guid: 033b0de10bb240f8b05d63d1b031a998, type: 3}
+  - {fileID: 296357274214913749, guid: 033b0de10bb240f8b05d63d1b031a998, type: 3}
+  - {fileID: 915303206555716244, guid: 87b7ae56b16047908a185f9cd3278e57, type: 3}
+  - {fileID: 1033570024444675329, guid: e589fd78909a41a98f3642d6168fb6a8, type: 3}
+  - {fileID: 779999059587595447, guid: f63078a015a14a29af28aca21b06db39, type: 3}
+  - {fileID: 881538364383631968, guid: 54a0c5970ef24706a73f9dcc969cf213, type: 3}
+  - {fileID: 1223087694234737962, guid: eda25bacc2c04c8bb8914b4943fdc888, type: 3}
+  - {fileID: 915303206555716244, guid: 87b7ae56b16047908a185f9cd3278e57, type: 3}
+  _segmentGap: 3.29
+  _enemyDensity: 0.79
+  _swordChance: 0.38
+  _shieldChance: 0.36
+  _mapPrefabs: []
+  _enemyCount: 0
+  _firstEnemyDistance: 5.0
+  _enemySpacing: 5.0
+  _finishOffset: 0.0

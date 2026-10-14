@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using GunSprint.Core;
 using GunSprint.Data;
 using GunSprint.Enemies;
@@ -26,6 +27,19 @@ namespace GunSprint.Gameplay.Modes
         [SerializeField] private Vector3 _gunStartRotation = new Vector3(0f, -90f, 0f);
         [SerializeField] private float _finishTargetsHeight = 1f;
 
+        [Header("Segments")]
+        [Tooltip("Height of the segment pivots (their ground tops sit about 9.4 m higher).")]
+        [SerializeField] private float _segmentHeight = -10f;
+
+        [Tooltip("The first segment starts this far behind the gun, so the gun starts on solid ground.")]
+        [SerializeField, Min(0f)] private float _segmentStartBack = 5f;
+
+        [Tooltip("The finish targets stand this far before the end of the last segment.")]
+        [SerializeField, Min(0f)] private float _finishInset = 4f;
+
+        // Per segment with enemies: the stretch of track they stand on and how many.
+        private readonly List<Vector2> _enemyRanges = new List<Vector2>();
+        private readonly List<int> _enemySlots = new List<int>();
         private GameSession _session;
         private bool _areEnemiesSpawned;
         private bool _isFinishRevealed;
@@ -63,6 +77,13 @@ namespace GunSprint.Gameplay.Modes
                 return;
             }
 
+            if (level.UsesSegments)
+            {
+                float finishDistance = BuildSegments(level, random);
+                StartCoroutine(SpawnEnemiesOnSegments(level, random, finishDistance));
+                return;
+            }
+
             GameObject map = level.PickMap(random);
             if (map != null)
             {
@@ -87,6 +108,68 @@ namespace GunSprint.Gameplay.Modes
             return levelIndex < _levels.Length ? _levels[levelIndex] : _levels[random.Next(_levels.Length)];
         }
 
+        /// <summary>Chains the level's segments along the track. Returns the finish distance.</summary>
+        private float BuildSegments(LevelConfigSO level, System.Random random)
+        {
+            TrackPath track = _session.Track;
+            Quaternion rotation = Quaternion.LookRotation(track.Forward);
+            float start = track.GetDistance(_gunStartPosition) - _segmentStartBack;
+            float end = start;
+            _enemyRanges.Clear();
+            _enemySlots.Clear();
+
+            for (int i = 0; i < level.Segments.Length; i++)
+            {
+                GameObject prefab = level.Segments[i];
+                if (prefab == null)
+                {
+                    continue;
+                }
+
+                FloorSegment segment = prefab.GetComponent<FloorSegment>();
+                float length = segment != null ? segment.Length : 20f;
+                Vector3 position = track.GetPoint(start + length * 0.5f);
+                position.y = _segmentHeight;
+                Instantiate(prefab, position, rotation, _mapRoot);
+
+                // The first segment is the safe landing area; the others get enemies.
+                if (i > 0 && segment != null)
+                {
+                    int count = Mathf.RoundToInt(segment.EnemySlots * level.EnemyDensity);
+                    if (count > 0)
+                    {
+                        _enemyRanges.Add(new Vector2(start + 1.5f, start + length - 1.5f));
+                        _enemySlots.Add(count);
+                    }
+                }
+
+                end = start + length;
+                start = end + level.SegmentGap;
+            }
+
+            return end - _finishInset;
+        }
+
+        private IEnumerator SpawnEnemiesOnSegments(LevelConfigSO level, System.Random random, float finishDistance)
+        {
+            yield return new WaitForFixedUpdate();
+
+            for (int i = 0; i < _enemyRanges.Count; i++)
+            {
+                Vector2 range = _enemyRanges[i];
+                int count = _enemySlots[i];
+                for (int k = 0; k < count; k++)
+                {
+                    float t = (k + 1f) / (count + 1f);
+                    _spawner.SpawnAt(Mathf.Lerp(range.x, range.y, t), random, level.SwordChance, level.ShieldChance);
+                }
+            }
+
+            PlaceFinishTargets(finishDistance);
+            _areEnemiesSpawned = true;
+            UpdateEnemiesRemaining();
+        }
+
         private IEnumerator SpawnEnemies(LevelConfigSO level, System.Random random)
         {
             // Wait one physics step so the freshly spawned map colliders can be hit by ground raycasts.
@@ -107,7 +190,8 @@ namespace GunSprint.Gameplay.Modes
         private void PlaceFinishTargets(float distance)
         {
             Vector3 position = _session.Track.GetPoint(distance);
-            position.y = _finishTargetsHeight;
+            float ground = _spawner.TryGetGroundHeight(distance, out float height) ? height : 0f;
+            position.y = ground + _finishTargetsHeight;
             _finishTargets.transform.position = position;
         }
 

@@ -27,9 +27,20 @@ namespace GunSprint.Gameplay.Modes
         [FormerlySerializedAs("_actualFloorSize")]
         [SerializeField, Min(1f)] private float _floorLength = 20f;
 
-        [Tooltip("Empty space between two segments.")]
+        [Tooltip("Smallest empty space between two segments.")]
         [FormerlySerializedAs("_gap")]
         [SerializeField, Min(0f)] private float _floorGap = 5f;
+
+        [Tooltip("Largest gap at the start of a run; it grows to the hard gap over the difficulty distance.")]
+        [SerializeField, Min(0f)] private float _maxGapEasy = 5f;
+
+        [SerializeField, Min(0f)] private float _maxGapHard = 9f;
+
+        [Tooltip("Meters over which the gaps and height changes reach full difficulty.")]
+        [SerializeField, Min(1f)] private float _difficultyDistance = 600f;
+
+        [Tooltip("Random height change of FloorSegment pieces at full difficulty, in meters.")]
+        [SerializeField, Min(0f)] private float _heightVariation = 1.2f;
 
         [SerializeField] private float _floorHeight = -10f;
         [SerializeField] private Vector3 _floorRotation = new Vector3(0f, 90f, 0f);
@@ -63,11 +74,13 @@ namespace GunSprint.Gameplay.Modes
 
         private readonly Queue<Floor> _activeFloors = new Queue<Floor>();
         private PrefabPool<Transform>[] _floorPools;
+        private FloorSegment[] _floorSegments;
         private System.Random _random;
         private GameSession _session;
         private float _nextFloorDistance;
         private float _restTimer;
         private bool _isRunning;
+        private bool _isFirstFloor;
 
         public override GameMode Mode => GameMode.Infinity;
 
@@ -93,7 +106,9 @@ namespace GunSprint.Gameplay.Modes
             start.y = _gunStartHeight;
             session.Gun.PlaceAt(start, Quaternion.Euler(_gunStartRotation));
 
-            _nextFloorDistance = headStart;
+            // The first piece is a plain floor centred under the gun, so the run never starts over a gap.
+            _nextFloorDistance = headStart - _floorLength * 0.5f;
+            _isFirstFloor = true;
             BuildFloorsAhead(headStart);
 
             int ammo = Mathf.RoundToInt(_ammoUpgrade.GetValue(session.Progress.GetUpgradeLevel(_ammoUpgrade)));
@@ -161,9 +176,11 @@ namespace GunSprint.Gameplay.Modes
         private void CreateFloorPools()
         {
             _floorPools = new PrefabPool<Transform>[_floorPrefabs.Length];
+            _floorSegments = new FloorSegment[_floorPrefabs.Length];
             for (int i = 0; i < _floorPrefabs.Length; i++)
             {
                 _floorPools[i] = new PrefabPool<Transform>(_floorPrefabs[i], _floorRoot, 4, 16);
+                _floorSegments[i] = _floorPrefabs[i].GetComponent<FloorSegment>();
             }
         }
 
@@ -174,21 +191,64 @@ namespace GunSprint.Gameplay.Modes
                 return;
             }
 
-            Quaternion rotation = Quaternion.Euler(_floorRotation);
             while (_nextFloorDistance < gunDistance + _buildAheadDistance)
             {
-                int poolIndex = _random.Next(_floorPools.Length);
-                Vector3 position = _session.Track.GetPoint(_nextFloorDistance);
-                position.y = _floorHeight;
+                float difficulty = Mathf.Clamp01(gunDistance / _difficultyDistance);
+                int poolIndex = PickFloor();
+                FloorSegment segment = _floorSegments[poolIndex];
+
+                // FloorSegment pieces know their length and face along the track; legacy floors
+                // are centred on their slot with the old fixed rotation.
+                float length = segment != null ? segment.Length : _floorLength;
+                Quaternion rotation = segment != null
+                    ? Quaternion.LookRotation(_session.Track.Forward)
+                    : Quaternion.Euler(_floorRotation);
+                float height = _floorHeight;
+                if (segment != null && !_isFirstFloor)
+                {
+                    height += RandomRange(-0.5f, 1f) * _heightVariation * difficulty;
+                }
+
+                float center = _nextFloorDistance + length * 0.5f;
+                Vector3 position = _session.Track.GetPoint(center);
+                position.y = height;
 
                 Transform floor = _floorPools[poolIndex].Get(position, rotation);
-                _activeFloors.Enqueue(new Floor(floor, poolIndex, _nextFloorDistance));
-                _nextFloorDistance += _floorLength + _floorGap;
+                _activeFloors.Enqueue(new Floor(floor, poolIndex, center + length * 0.5f));
+
+                float maxGap = Mathf.Lerp(_maxGapEasy, _maxGapHard, difficulty);
+                _nextFloorDistance += length + RandomRange(_floorGap, Mathf.Max(_floorGap, maxGap));
+                _isFirstFloor = false;
             }
+        }
+
+        private int PickFloor()
+        {
+            if (!_isFirstFloor)
+            {
+                return _random.Next(_floorPools.Length);
+            }
+
+            // Prefer a flat legacy floor (no FloorSegment) or the first entry as the starting piece.
+            for (int i = 0; i < _floorSegments.Length; i++)
+            {
+                if (_floorSegments[i] == null)
+                {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
+        private float RandomRange(float min, float max)
+        {
+            return min + (float)_random.NextDouble() * (max - min);
         }
 
         private void RecycleFloorsBehind(float gunDistance)
         {
+            // Distance is the far end of each piece, so long pieces are never recycled under the gun.
             while (_activeFloors.Count > 0 && _activeFloors.Peek().Distance < gunDistance - _recycleBehindDistance)
             {
                 Floor floor = _activeFloors.Dequeue();
