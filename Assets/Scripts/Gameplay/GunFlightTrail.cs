@@ -1,4 +1,5 @@
 using GunSprint.Data;
+using GunSprint.Utils;
 using UnityEngine;
 
 namespace GunSprint.Gameplay
@@ -43,6 +44,7 @@ namespace GunSprint.Gameplay
                 source.enabled = false;
             }
 
+            TrailEffects.DisableScreenDistortion(trail);
             _trails = trail.GetComponentsInChildren<TrailRenderer>(true);
             foreach (TrailRenderer t in _trails)
             {

@@ -1,4 +1,5 @@
 using System;
+using GunSprint.Utils;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -33,6 +34,7 @@ namespace GunSprint.Gameplay
         {
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<Collider>();
+            TrailEffects.DisableScreenDistortion(gameObject);
         }
 
         public void Launch(Vector3 velocity, Collider ownerCollider, Action<Bullet> finished)
