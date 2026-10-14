@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be33aa0ff4c4a32acff85616310ff57, type: 3}
+  m_Name: Gun_pump
+  m_EditorClassIdentifier: 
+  _id: pump
+  _displayName: 'PUMP SHOTGUN'
+  _price: 6000
+  _config: {fileID: 11400000, guid: cf0bfc7220bd491fad215f308b4955a1, type: 2}
+  _modelPrefab: {fileID: 919132149155446097, guid: f62f7dc06bd890d4aab43b8fd635fe02, type: 3}
+  _modelRotation: {x: 0, y: 0, z: 0}
+  _trailPrefab: {fileID: 2393817908272368249, guid: 26169785b8e30c944a512729256a05cd, type: 3}
