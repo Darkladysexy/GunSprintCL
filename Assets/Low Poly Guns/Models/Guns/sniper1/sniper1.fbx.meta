@@ -3,10 +3,15 @@ guid: 60d91f925d8c1e442bb6596dfb94ffff
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: sniper1
+    second: {fileID: 2100000, guid: b2dfdf44d328a59449b16f2b9d82492c, type: 2}
   materials:
     materialImportMode: 1
-    materialName: 0
+    materialName: 1
     materialSearch: 1
     materialLocation: 1
   animations:

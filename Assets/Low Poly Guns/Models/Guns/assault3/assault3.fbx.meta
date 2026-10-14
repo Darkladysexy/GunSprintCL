@@ -3,10 +3,15 @@ guid: e525d5c90c0df01498dca09570cfb5ec
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: assault3
+    second: {fileID: 2100000, guid: 9a50065a1e4866b42946175d9a5f86b6, type: 2}
   materials:
     materialImportMode: 1
-    materialName: 0
+    materialName: 1
     materialSearch: 1
     materialLocation: 1
   animations:

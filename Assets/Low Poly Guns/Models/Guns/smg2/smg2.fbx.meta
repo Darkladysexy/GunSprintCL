@@ -3,10 +3,15 @@ guid: a957639d15248134a9be03d5ae4fed7f
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: smg2
+    second: {fileID: 2100000, guid: d05b83a5733b4ba469d3c1a5891d6f88, type: 2}
   materials:
     materialImportMode: 1
-    materialName: 0
+    materialName: 1
     materialSearch: 1
     materialLocation: 1
   animations:
