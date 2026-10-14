@@ -36,3 +36,6 @@
 ehthumbs.db
 Thumbs.db
 # Ignore BFG cleanup folders
+# Unity Version Control (Plastic SCM) workspace - project uses git
+.plastic/
+ignore.conf
