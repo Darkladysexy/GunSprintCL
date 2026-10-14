@@ -39,6 +39,12 @@ namespace GunSprint.Gameplay
             _rigidbody.angularVelocity = new Vector3(0f, 0f, spin);
         }
 
+        /// <summary>Switches to another gun's stats (see GunLoadout).</summary>
+        public void SetConfig(GunConfigSO config)
+        {
+            _config = config;
+        }
+
         /// <summary>Pushes the gun backwards and spins it, like a real recoil.</summary>
         public void ApplyRecoil(Vector3 muzzleForward)
         {

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f249de97704e43aaa7074e09cabaceb4, type: 3}
+  m_Name: GunConfig_ghost92
+  m_EditorClassIdentifier: 
+  _bulletSpeed: 18.0
+  _fireCooldown: 0.1
+  _smokeDuration: 1.0
+  _slowMotionScale: 0.2
+  _recoilImpulse: 9.0
+  _spinImpulse: 2.3
+  _maxSpinBonus: 3.0
+  _maxAngularVelocity: 10.0
+  _floorJumpImpulse: 0.9
+  _upAssistImpulse: 4.5
+  _upAssistHeight: 10.0
+  _landingBounce: 0.35
+  _killHeight: -5.0

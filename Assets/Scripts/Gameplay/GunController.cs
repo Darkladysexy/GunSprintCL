@@ -24,6 +24,7 @@ namespace GunSprint.Gameplay
         private GunMotor _motor;
         private GunShooter _shooter;
         private bool _hasFallen;
+        private float _nextFireTime;
 
         public event Action Fired;
         public event Action Fell;
@@ -59,6 +60,12 @@ namespace GunSprint.Gameplay
             }
         }
 
+        /// <summary>Switches to another gun's stats (see GunLoadout).</summary>
+        public void SetConfig(GunConfigSO config)
+        {
+            _config = config;
+        }
+
         public void PlaceAt(Vector3 position, Quaternion rotation)
         {
             _hasFallen = false;
@@ -67,10 +74,13 @@ namespace GunSprint.Gameplay
 
         private void HandleFirePressed()
         {
-            if (!_runState.IsPlaying || !_runState.TryConsumeAmmo())
+            // Real time, so the fire rate does not drop during slow motion.
+            if (!_runState.IsPlaying || Time.unscaledTime < _nextFireTime || !_runState.TryConsumeAmmo())
             {
                 return;
             }
+
+            _nextFireTime = Time.unscaledTime + _config.FireCooldown;
 
             _shooter.Fire();
             _motor.ApplyRecoil(_shooter.MuzzleForward);

@@ -3,8 +3,8 @@ using UnityEngine;
 namespace GunSprint.Data
 {
     /// <summary>
-    /// Tuning values for the gun. Kept in an asset so designers can tweak them in Play mode
-    /// and keep the changes. All forces are impulses (N·s) so they behave identically in slow motion.
+    /// Tuning values for one gun (each gun in the shop has its own asset). Kept in an asset so
+    /// designers can tweak them in Play mode and keep the changes. All forces are impulses (N·s) so they behave identically in slow motion.
     /// </summary>
     [CreateAssetMenu(fileName = "GunConfig", menuName = "GunSprint/Data/Gun Config")]
     public class GunConfigSO : ScriptableObject
@@ -12,6 +12,9 @@ namespace GunSprint.Data
         [Header("Shooting")]
         [Tooltip("Bullet speed before the Power upgrade is applied.")]
         [SerializeField, Min(0f)] private float _bulletSpeed = 12f;
+
+        [Tooltip("Minimum real-time seconds between two shots (fire rate).")]
+        [SerializeField, Min(0f)] private float _fireCooldown = 0.15f;
 
         [Tooltip("Seconds the muzzle smoke keeps emitting after a shot.")]
         [SerializeField, Min(0f)] private float _smokeDuration = 1f;
@@ -48,6 +51,8 @@ namespace GunSprint.Data
         [SerializeField] private float _killHeight = -5f;
 
         public float BulletSpeed => _bulletSpeed;
+
+        public float FireCooldown => _fireCooldown;
 
         public float SmokeDuration => _smokeDuration;
 

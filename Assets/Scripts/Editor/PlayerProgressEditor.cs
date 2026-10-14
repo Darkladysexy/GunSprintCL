@@ -27,6 +27,7 @@ namespace GunSprint.Editor
                 EditorGUILayout.FloatField("Best distance (m)", progress.BestDistance);
                 EditorGUILayout.Toggle("Sound on", progress.IsSoundOn);
                 EditorGUILayout.EnumPopup("Last mode", progress.SelectedMode);
+                EditorGUILayout.TextField("Equipped gun", progress.EquippedGunId);
             }
 
             EditorGUILayout.Space();
@@ -37,22 +38,22 @@ namespace GunSprint.Editor
             }
 
             if (GUILayout.Button("Reset all progress")
-                && EditorUtility.DisplayDialog("Reset progress", "Delete coins, level, record and upgrades?", "Reset", "Cancel"))
+                && EditorUtility.DisplayDialog("Reset progress", "Delete coins, level, record, upgrades and guns?", "Reset", "Cancel"))
             {
-                progress.ResetAll(FindUpgrades());
+                progress.ResetAll(FindAssets<UpgradeSO>(), FindAssets<GunDefinitionSO>());
             }
         }
 
-        private static UpgradeSO[] FindUpgrades()
+        private static T[] FindAssets<T>() where T : Object
         {
-            string[] guids = AssetDatabase.FindAssets("t:" + nameof(UpgradeSO));
-            var upgrades = new UpgradeSO[guids.Length];
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);
+            var assets = new T[guids.Length];
             for (int i = 0; i < guids.Length; i++)
             {
-                upgrades[i] = AssetDatabase.LoadAssetAtPath<UpgradeSO>(AssetDatabase.GUIDToAssetPath(guids[i]));
+                assets[i] = AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guids[i]));
             }
 
-            return upgrades;
+            return assets;
         }
     }
 }

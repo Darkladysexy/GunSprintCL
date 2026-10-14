@@ -45,6 +45,10 @@ namespace GunSprint.Gameplay
 
         public Vector3 MuzzleForward => _muzzle.forward;
 
+        public Transform Muzzle => _muzzle;
+
+        public ParticleSystem MuzzleSmoke => _muzzleSmoke;
+
         private void Awake()
         {
             _ownerCollider = GetComponent<Collider>();
@@ -76,6 +80,12 @@ namespace GunSprint.Gameplay
             {
                 _muzzleSmoke.Stop();
             }
+        }
+
+        /// <summary>Switches to another gun's stats (see GunLoadout).</summary>
+        public void SetConfig(GunConfigSO config)
+        {
+            _config = config;
         }
 
         public void Fire()

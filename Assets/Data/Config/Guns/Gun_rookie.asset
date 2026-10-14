@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be33aa0ff4c4a32acff85616310ff57, type: 3}
+  m_Name: Gun_rookie
+  m_EditorClassIdentifier: 
+  _id: rookie
+  _displayName: 'ROOKIE'
+  _price: 0
+  _config: {fileID: 11400000, guid: cda177b8d2e04267ba75df191b317f98, type: 2}
+  _modelPrefab: {fileID: 4920507860935382577, guid: 5f04650d3064895489cdb8f95e907c1b, type: 3}
+  _modelRotation: {x: 0, y: 0, z: 0}
+  _trailPrefab: {fileID: 5818205763518135594, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}

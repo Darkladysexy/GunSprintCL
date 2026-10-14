@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be33aa0ff4c4a32acff85616310ff57, type: 3}
+  m_Name: Gun_classic92
+  m_EditorClassIdentifier: 
+  _id: classic92
+  _displayName: 'CLASSIC 92'
+  _price: 5000
+  _config: {fileID: 11400000, guid: 98a55d81c0c74479bb33c8d650274366, type: 2}
+  _modelPrefab: {fileID: 1571873486409940420, guid: 050b8f89784d3b44fa285b5a719411e1, type: 3}
+  _modelRotation: {x: 0, y: -90, z: 0}
+  _trailPrefab: {fileID: 8597731318025692521, guid: ae6bdf3417a5d6047a559654858dac31, type: 3}

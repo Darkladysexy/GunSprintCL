@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be33aa0ff4c4a32acff85616310ff57, type: 3}
+  m_Name: Gun_bouncer
+  m_EditorClassIdentifier: 
+  _id: bouncer
+  _displayName: 'BOUNCER'
+  _price: 1200
+  _config: {fileID: 11400000, guid: 9e806591b98646ffb0ef1711cb25360f, type: 2}
+  _modelPrefab: {fileID: 7173815278906741782, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
+  _modelRotation: {x: 0, y: 0, z: 0}
+  _trailPrefab: {fileID: 2393817908272368249, guid: 26169785b8e30c944a512729256a05cd, type: 3}

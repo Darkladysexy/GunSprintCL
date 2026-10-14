@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GunConfig
   m_EditorClassIdentifier: 
   _bulletSpeed: 12.0
+  _fireCooldown: 0.15
   _smokeDuration: 1.0
   _slowMotionScale: 0.2
   _recoilImpulse: 8.0

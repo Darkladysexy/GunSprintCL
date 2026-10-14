@@ -19,10 +19,13 @@ namespace GunSprint.Data
         private const string k_BestDistanceKey = "best_meters";
         private const string k_SoundKey = "Setting_Sound";
         private const string k_ModeKey = "gm_mode";
+        private const string k_EquippedGunKey = "gun_equipped";
+        private const string k_OwnedGunKeyPrefix = "gun_owned_";
 
         public event Action<int> CoinsChanged;
         public event Action<bool> SoundChanged;
         public event Action<UpgradeSO> UpgradePurchased;
+        public event Action<GunDefinitionSO> GunsChanged;
 
         public int Coins => PlayerPrefs.GetInt(k_CoinsKey, 0);
 
@@ -60,6 +63,36 @@ namespace GunSprint.Data
 
             SetCoins(Coins - amount);
             return true;
+        }
+
+        /// <summary>Id of the equipped gun; empty means the catalog's default gun.</summary>
+        public string EquippedGunId => PlayerPrefs.GetString(k_EquippedGunKey, string.Empty);
+
+        public bool IsGunOwned(string gunId)
+        {
+            return PlayerPrefs.GetInt(k_OwnedGunKeyPrefix + gunId, 0) == 1;
+        }
+
+        /// <summary>Buys the gun if the player has enough coins. Does not equip it.</summary>
+        public bool TryBuyGun(GunDefinitionSO gun)
+        {
+            if (IsGunOwned(gun.Id) || !TrySpendCoins(gun.Price))
+            {
+                return false;
+            }
+
+            PlayerPrefs.SetInt(k_OwnedGunKeyPrefix + gun.Id, 1);
+            Save();
+            GunsChanged?.Invoke(gun);
+            return true;
+        }
+
+        /// <summary>Equips a gun. The caller checks ownership (see GunCatalogSO.IsOwned).</summary>
+        public void EquipGun(GunDefinitionSO gun)
+        {
+            PlayerPrefs.SetString(k_EquippedGunKey, gun.Id);
+            Save();
+            GunsChanged?.Invoke(gun);
         }
 
         public void AdvanceLevel()
@@ -125,8 +158,17 @@ namespace GunSprint.Data
         /// <summary>
         /// Deletes every saved value. Exposed to the Editor inspector for testing only.
         /// </summary>
-        public void ResetAll(params UpgradeSO[] upgrades)
+        public void ResetAll(UpgradeSO[] upgrades, GunDefinitionSO[] guns)
         {
+            PlayerPrefs.DeleteKey(k_EquippedGunKey);
+            foreach (GunDefinitionSO gun in guns)
+            {
+                if (gun != null)
+                {
+                    PlayerPrefs.DeleteKey(k_OwnedGunKeyPrefix + gun.Id);
+                }
+            }
+
             PlayerPrefs.DeleteKey(k_CoinsKey);
             PlayerPrefs.DeleteKey(k_LevelIndexKey);
             PlayerPrefs.DeleteKey(k_BestDistanceKey);
@@ -141,6 +183,7 @@ namespace GunSprint.Data
 
             Save();
             CoinsChanged?.Invoke(Coins);
+            GunsChanged?.Invoke(null);
         }
 
         private void SetCoins(int value)

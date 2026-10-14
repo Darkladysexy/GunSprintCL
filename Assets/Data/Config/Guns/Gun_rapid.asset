@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be33aa0ff4c4a32acff85616310ff57, type: 3}
+  m_Name: Gun_rapid
+  m_EditorClassIdentifier: 
+  _id: rapid
+  _displayName: 'RAPID'
+  _price: 2000
+  _config: {fileID: 11400000, guid: dbfefcf615504572bc30d80120876254, type: 2}
+  _modelPrefab: {fileID: 7779035596426449466, guid: 436d84b39ebbb99449cf0c0ed23b24a5, type: 3}
+  _modelRotation: {x: 0, y: 0, z: 0}
+  _trailPrefab: {fileID: 1826059589380599827, guid: 07a0367c119e4ca408ec23af0e377799, type: 3}

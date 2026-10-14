@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be33aa0ff4c4a32acff85616310ff57, type: 3}
+  m_Name: Gun_ghost92
+  m_EditorClassIdentifier: 
+  _id: ghost92
+  _displayName: 'GHOST 92'
+  _price: 7500
+  _config: {fileID: 11400000, guid: 587c71be53964d569fa71c42a49ce399, type: 2}
+  _modelPrefab: {fileID: 3945439267341455232, guid: d203906c532c7414bb2292dc2ec075b5, type: 3}
+  _modelRotation: {x: 0, y: -90, z: 0}
+  _trailPrefab: {fileID: 2653153344604433488, guid: f6bbcfa7e746d0340bd78dd22f35b3b3, type: 3}
